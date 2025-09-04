@@ -7,33 +7,48 @@ import AddPage from './Components/Page/AddPage'
 import { ToastContainer } from 'react-toastify'
 import Login from './Components/Login/Login'
 import { useEffect, useRef, useState } from 'react'
+import ApiService from './Utils/ApiService'
 
 function App() {
-  const [isadminSession, setisadminSession] = useState(false)
+  const [isadminValid, setisadminValid] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const didMountRef = useRef(true)
-  useEffect(() => {
 
+  let token = JSON.parse(localStorage.getItem("TOKEN"))
+
+  useEffect(() => {
     if (didMountRef.current) {
-      let admin = JSON.parse(localStorage.getItem("AdminSession"))
-      // console.log(admin)
-      if (admin !== undefined && admin !== null) {
-        setisadminSession(true)
+      if (token == undefined || token == null || token == "") {
+         setisadminValid(false)
+            setIsLoading(false)
+
+      } else {
+         ApiService.fetchData("verify").then((res)=>{
+          if(res?.status === 200)
+          {
+            setisadminValid(true)
+            setIsLoading(false)
+          }
+        })
       }
     }
     didMountRef.current = false
   }, [])
 
+if (isLoading) {
+  return <div>Loading...</div> // Show loading indicator instead of login page
+}
 
   return (
     <>
       <BrowserRouter>
         <ToastContainer />
         {
-          !isadminSession ? <>
+          !isadminValid ? <>
 
             <Routes>
               <Route path='/' element={<Login />} />
-                <Route path='/*' element={<Navigate to="/" replace />} />
+              <Route path='/*' element={<Navigate to="/" replace />} />
 
             </Routes>
           </> : <>

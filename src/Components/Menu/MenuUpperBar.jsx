@@ -1,5 +1,12 @@
 
 const MenuUpperBar = () => {
+
+
+    const logout=()=>
+    {
+        localStorage.removeItem("TOKEN")
+        window.location.reload()
+    }
     return <>
 
         <div className="content">
@@ -96,7 +103,7 @@ const MenuUpperBar = () => {
                         <div
                             className="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                             <p className="text-center">Welcome Paradise</p>
-                            <a href="#" className="dropdown-item"><i
+                            <a href="#" className="dropdown-item" onClick={logout}><i
                                 className="ri-logout-box-r-line me-2"></i>Log Out</a>
                         </div>
                     </div>
