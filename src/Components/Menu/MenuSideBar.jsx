@@ -32,6 +32,9 @@ const MenuSideBar = () => {
                     <NavLink to="/" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
+                    <NavLink to="/user" className={({ isActive }) =>
+                        `nav-item nav-link ${isActive ? "active" : ""}`
+                    }><i className="fa fa-tachometer-alt me-2"></i>User</NavLink>
 
                     <div className="nav-item dropdown">
                         <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i

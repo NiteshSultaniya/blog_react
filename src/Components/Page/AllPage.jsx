@@ -1,32 +1,8 @@
-import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const AllPage = () => {
-    const [pageData, setpageData] = useState([])
-    const didMountRef = useRef(true);
-    useEffect(() => {
-        if (didMountRef.current) {
-            const saved = localStorage.getItem("pageDataSession");
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                setpageData(parsed);
-            }
-            console.log("Loaded from storage:", pageData);
-        }
-        didMountRef.current = false;
-    }, [])
-    const deleteconfirm = (value) => {
-        const existingPageString=localStorage.getItem("pageDataSession")
-        let existingPageData=existingPageString?JSON.parse(existingPageString):[]
-        console.log(existingPageData)
-        if(existingPageData && existingPageData.length>0)
-        {
-            const newPageData=existingPageData.filter((sessionValue)=>{return sessionValue.page_id != value})
-            console.log(newPageData)
-            setpageData(newPageData)
-            localStorage.setItem("pageDataSession",JSON.stringify(newPageData))
-        }
-    }
+   
+    let pageData={}
     return <>
 
         <div className="container-fluid">

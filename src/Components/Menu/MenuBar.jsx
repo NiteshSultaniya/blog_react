@@ -5,14 +5,8 @@ import MenuUpperBar from "./MenuUpperBar"
 
 const MenuBar = () => {
     return <>
-
-
-
-        <MenuSideBar/>
-
-    <MenuUpperBar/>
-
-
+        <MenuSideBar />
+        <MenuUpperBar />
     </>
 
 }

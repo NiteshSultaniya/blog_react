@@ -13,4 +13,16 @@ export class Toasts {
             icon: "✅"
         });
     }
+    static error(msg) {
+        toast.error(msg, {
+            position: "bottom-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+            icon: "✅"
+        });
+    }
 }

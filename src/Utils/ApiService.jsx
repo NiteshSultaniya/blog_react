@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Toasts } from "./Toasts";
 
 // const location=useLocation()
 
@@ -14,7 +15,7 @@ client.interceptors.request.use(
 );
 
 client.interceptors.response.use(
-    (response) => { 
+    (response) => {
         return response;
     },
 );
@@ -22,13 +23,18 @@ client.interceptors.response.use(
 function getAuthToken() {
     let tokenn = localStorage.getItem("TOKEN");
     let token = JSON.parse(tokenn);
-    // console.log(token)
-    let Authtoken = "";
-    if (token !== null || token !== undefined || token !== "") {
-        Authtoken = token;
+    let config = "";
+    if (token == null || token == undefined || token == "") {
+        config = {
+            headers: { "Authorization": `Bearer ` }
+        }
     }
-    let config = {
-        headers: { "Authorization": `Bearer ${Authtoken}` }
+    else {
+        // console.log(token)
+        config = {
+            headers: { "Authorization": `Bearer ${token}` }
+        }
+
     }
     return config;
 }
@@ -40,16 +46,18 @@ export default class ApiService {
             return response.data;
         }
         catch (e) {
+            Toasts.error("Network Error")
             return e.response.data
+            }
         }
-    }
-    
-    static async postData(url, data) {
-        try {
-            const response = await client.post(url, data, getAuthToken());
-            return response.data;
-        }
-        catch (e) {
+        
+        static async postData(url, data) {
+            try {
+                const response = await client.post(url, data, getAuthToken());
+                return response.data;
+            }
+            catch (e) {
+            Toasts.error("Network Error")
             return e.response.data
             // console.log(e.response.data)
         }
