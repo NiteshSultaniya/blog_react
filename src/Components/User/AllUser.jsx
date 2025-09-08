@@ -8,14 +8,16 @@ const AllUser = () => {
 
     const [userData, setuserData] = useState({});
     const [modelToggle, setmodelToggle] = useState(false);
+    const [editmodelToggle, seteditmodelToggle] = useState({});
     const didMountRef = useRef(true)
 
- const modelTogglee=()=>{
-    setmodelToggle(!modelToggle)
-    // console.log(modelToggle)
- }
+    const modelTogglee = () => {
+        setmodelToggle(!modelToggle)
+        // console.log(modelToggle)
+        seteditmodelToggle("")
+    }
 
- const hideloginmodal = () => {
+    const hideloginmodal = () => {
         setmodelToggle(!modelToggle);
     }
 
@@ -71,6 +73,19 @@ const AllUser = () => {
         })
     }
 
+    const editUser = (userId) => {
+        console.log(userId);
+        ApiService.fetchData(`find-by-id/${userId}`).then((res) => {
+            if (res?.status === "success") {
+                // console.log(res.data);
+                modelTogglee()
+                seteditmodelToggle(res.data)
+            } else {
+                Toasts.error(res?.msg)
+            }
+        })
+    }
+
     return <>
 
         <div className="container-fluid">
@@ -121,7 +136,7 @@ const AllUser = () => {
                                             {userData && userData.length > 0 ?
                                                 <>
                                                     {userData.map((value, index) => (<>
-                                                        <tr key={index}>
+                                                        <tr key={value?.id}>
                                                             <th>{index + 1}</th>
                                                             <td>{value?.user_name}</td>
                                                             <td>{value?.user_email}</td>
@@ -137,9 +152,9 @@ const AllUser = () => {
                                                             </>}
 
                                                             <td className="text-center">
-                                                                <button className="btn btn-info btn-sm btnaction" ><i
+                                                                <button className="btn btn-info btn-sm btnaction" onClick={(e) => editUser(value?.id)}><i
                                                                     className="fas fa-pencil-alt"></i></button>
-                                                                <button 
+                                                                <button
                                                                     onClick={(e) => deleteconfirm(value?.id)}
                                                                     className="btn btn-danger  btn-sm btnaction"><i
                                                                         className="fas fa-trash "></i></button>
@@ -163,7 +178,7 @@ const AllUser = () => {
         </div>
 
         {
-            modelToggle && <UserModel modelToggle={modelToggle} hideloginmodal={hideloginmodal}/>
+            modelToggle && <UserModel modelToggle={modelToggle} hideloginmodal={hideloginmodal} editmodelToggle={editmodelToggle}/>
         }
 
     </>

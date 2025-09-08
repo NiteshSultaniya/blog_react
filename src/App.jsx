@@ -9,6 +9,7 @@ import Login from './Components/Login/Login'
 import { useEffect, useRef, useState } from 'react'
 import ApiService from './Utils/ApiService'
 import AllUser from './Components/User/AllUser'
+import AddMedia from './Components/Media/AddMedia'
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
@@ -62,6 +63,7 @@ function App() {
                 <Route path='/all-page' element={<AllPage />} />
                 <Route path='/user' element={<AllUser />} />
                 <Route path='/add-page' element={<AddPage />} />
+                <Route path='/add-media' element={<AddMedia />} />
                 <Route path='/add-page/:id' element={<AddPage />} />
                 <Route path='/*' element={<Navigate to="/" replace />} />
               </Routes>

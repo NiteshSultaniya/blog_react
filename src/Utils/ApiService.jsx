@@ -26,7 +26,7 @@ function getAuthToken() {
     let config = "";
     if (token == null || token == undefined || token == "") {
         config = {
-            headers: { "Authorization": `Bearer ` }
+            headers: { "Authorization": `Bearer `,"Content-Type": "application/json" }
         }
     }
     else {
