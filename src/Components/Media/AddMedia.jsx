@@ -1,9 +1,20 @@
+import { useEffect, useState } from "react";
+import ApiService from "../../Utils/ApiService";
+import { Toasts } from "../../Utils/Toasts";
+
 const AddMedia = () => {
+    const [formData, setformData] = useState({
+        media_name: "",
+        file: null,
+    })
+
     var allowedMimes = ["png", "jpg", "jpeg", "gif"]; //allowed image mime types
     var maxMb = 2; //maximum allowed size (MB) of image
 
-    function imageValidation(imageFile) {
-        var fileInput = document.getElementById(imageFile);
+    const imageValidation = (imageFile) => {
+        var fileInput = document.getElementById("imageFile");
+        // console.log(fileInput);
+        // return false
 
         var mime = fileInput.value.split(".").pop();
         var fsize = fileInput.files[0].size;
@@ -20,8 +31,35 @@ const AddMedia = () => {
                 $(".mediaImage").attr("src", event.target.result);
             };
             reader.readAsDataURL(fileInput.files[0]);
+            const file = fileInput.files[0];
+
+            setformData({ ...formData, file });
         }
     }
+
+    useEffect(() => {
+        console.log("Updated formData:", formData);
+    }, [formData]);
+
+
+    const submitForm = () => {
+        ApiService.postData("add-media-process", formData, true).then((res) => {
+            if (res?.status === 200) {
+                Toasts.sucess(res?.msg)
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000);
+            } else {
+                Toasts.error(res?.msg)
+            }
+        })
+
+    }
+
+    const changeValue = (e) => {
+            setformData({ ...formData, [e.target.name]: e.target.value })
+    }
+
     return (
         <>
             <div className="page-content">
@@ -44,8 +82,6 @@ const AddMedia = () => {
                     </div>
                     <div className="row">
                         <div >
-                            <input type="hidden" name="media_id"
-                                value="" />
                             <div className="card bg-secondary rounded p-2">
                                 <div className="card-header">
                                     <div className="row align-items-center gy-3">
@@ -58,13 +94,22 @@ const AddMedia = () => {
                                     <div className="row">
                                         <div className="col-lg-12">
                                             <div className="mb-3">
+                                                <label className="form-label">Media Name: <span style={{ color: "red" }}>*</span></label>
+                                                <input type="text"
+                                                    className="form-control required"
+                                                    placeholder="Media Name"
+                                                    name="media_name" onChange={changeValue} value={formData.media_name} />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-12">
+                                            <div className="mb-3">
                                                 <div className="fileimg d-flex">
                                                     <img className="fileimg-preview logoimage mediaImage mt-2" style={{ width: "80px", height: "80px", marginRight: "10px", borderRadius: "5px" }} />
-                                                    <div style={{width:"100%"}}>
+                                                    <div style={{ width: "100%" }}>
                                                         <label className="form-label">Media Image:<span
                                                             style={{ color: "red" }}>*</span></label>
                                                         <div className="input-group">
-                                                            <input type="file" className="form-control " id="imageFile" name="media"
+                                                            <input type="file" className="form-control " id="imageFile" name="file"
                                                                 accept="image/png, image/gif, image/jpeg"
                                                                 onChange={(e) => imageValidation(imageFile)} />
 
@@ -79,7 +124,7 @@ const AddMedia = () => {
                                     </div>
                                 </div>
                                 <div className="card-footer  d-flex justify-content-between">
-                                    <button type="submit" id='button' className="btn btn-success">Save</button>
+                                    <button type="button" onClick={submitForm} className="btn btn-success">Save</button>
                                 </div>
 
                             </div>

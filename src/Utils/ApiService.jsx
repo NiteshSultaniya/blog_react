@@ -20,20 +20,27 @@ client.interceptors.response.use(
     },
 );
 
-function getAuthToken() {
+function getAuthToken(isFileUpload) {
     let tokenn = localStorage.getItem("TOKEN");
     let token = JSON.parse(tokenn);
     let config = "";
     if (token == null || token == undefined || token == "") {
         config = {
-            headers: { "Authorization": `Bearer `,"Content-Type": "application/json" }
+            headers: { "Authorization": `Bearer ` }
         }
     }
     else {
         // console.log(token)
-        config = {
-            headers: { "Authorization": `Bearer ${token}` }
+        // config = {
+        //     headers: { "Authorization": `Bearer ${token}`}
+        // }
+        let headers={};
+         headers["Authorization"] = `Bearer ${token}` ;
+        if (isFileUpload) {
+            headers["Content-Type"] = "multipart/form-data";
         }
+
+        config = { headers };
 
     }
     return config;
@@ -48,15 +55,15 @@ export default class ApiService {
         catch (e) {
             Toasts.error("Network Error")
             return e.response.data
-            }
         }
-        
-        static async postData(url, data) {
-            try {
-                const response = await client.post(url, data, getAuthToken());
-                return response.data;
-            }
-            catch (e) {
+    }
+
+    static async postData(url, data, isFileUpload=false) {
+        try {
+            const response = await client.post(url, data, getAuthToken(isFileUpload));
+            return response.data;
+        }
+        catch (e) {
             Toasts.error("Network Error")
             return e.response.data
             // console.log(e.response.data)
