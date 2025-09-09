@@ -43,7 +43,19 @@ const AddMedia = () => {
 
 
     const submitForm = () => {
-        ApiService.postData("add-media-process", formData, true).then((res) => {
+        let required = document.getElementsByClassName("required");
+        let counter = 0
+        for (let i = 0; i < required.length; i++) {
+            if (required[i].value === "") {
+                required[i].style.border = "1px solid red";
+                counter++
+            }
+        }
+        if (counter > 0) {
+            Toasts.error("Please Fill Required Field")
+            return false
+        } else {
+        ApiService.postData("media/add-media-process", formData, true).then((res) => {
             if (res?.status === 200) {
                 Toasts.sucess(res?.msg)
                 setTimeout(() => {
@@ -53,6 +65,7 @@ const AddMedia = () => {
                 Toasts.error(res?.msg)
             }
         })
+    }   
 
     }
 

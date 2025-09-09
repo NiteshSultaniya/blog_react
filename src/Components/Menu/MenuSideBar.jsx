@@ -35,7 +35,7 @@ const MenuSideBar = () => {
                     <NavLink to="/user" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>User</NavLink>
-<NavLink to="/add-media" className={({ isActive }) =>
+<NavLink to="/all-media" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-plant-wilt me-2"></i>Media</NavLink>
                     <div className="nav-item dropdown">

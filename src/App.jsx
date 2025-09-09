@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react'
 import ApiService from './Utils/ApiService'
 import AllUser from './Components/User/AllUser'
 import AddMedia from './Components/Media/AddMedia'
+import AllMedia from './Components/Media/AllMedia'
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
@@ -63,6 +64,7 @@ function App() {
                 <Route path='/all-page' element={<AllPage />} />
                 <Route path='/user' element={<AllUser />} />
                 <Route path='/add-page' element={<AddPage />} />
+                <Route path='/all-media' element={<AllMedia />} />
                 <Route path='/add-media' element={<AddMedia />} />
                 <Route path='/add-page/:id' element={<AddPage />} />
                 <Route path='/*' element={<Navigate to="/" replace />} />
