@@ -4,9 +4,11 @@ const MenuSideBar = () => {
 
     const location = useLocation();
 
-  // check if current path starts with /all-page or /add-page
-  const isPageActive = location.pathname.startsWith("/all-page") || 
-                       location.pathname.startsWith("/add-page");
+    // check if current path starts with /all-page or /add-page
+    const isPageActive = location.pathname.startsWith("/all-page") ||
+        location.pathname.startsWith("/add-page");
+    const isproductactive = location.pathname.startsWith("/all-product") ||
+        location.pathname.startsWith("/add-product") || location.pathname.startsWith("/product-category");
     return <>
         <div className="sidebar pe-4 pb-3">
             <nav className="navbar bg-secondary navbar-dark">
@@ -15,8 +17,8 @@ const MenuSideBar = () => {
                     </a> */}
                 <div className="d-flex align-items-center ms-4 mb-4">
                     <div className="position-relative">
-                    <a href="/">
-                        <img className="rounded-circle" src="/public/assets/img/paradise.png" alt="" style={{ width: "40px", height: "40px" }} />
+                        <a href="/">
+                            <img className="rounded-circle" src="/public/assets/img/paradise.png" alt="" style={{ width: "40px", height: "40px" }} />
                         </a>
                         <div
                             className="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
@@ -35,13 +37,30 @@ const MenuSideBar = () => {
                     <NavLink to="/user" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>User</NavLink>
-<NavLink to="/all-media" className={({ isActive }) =>
+                    <NavLink to="/all-media" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-plant-wilt me-2"></i>Media</NavLink>
+
+                    <div className="nav-item dropdown">
+                        <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
+                            className="fa fa-laptop me-2"></i>Products</a>
+                        <div className={`dropdown-menu bg-transparent border-0 ${isproductactive ? "show" : ""}`}>
+                            <NavLink to="/all-product" className={({ isActive }) =>
+                                `dropdown-item ${isActive ? "active" : ""}`
+                            }>All Products</NavLink>
+                            <NavLink to="/add-product" className={({ isActive }) =>
+                                `dropdown-item ${isActive ? "active" : ""}`
+                            }>Add Product</NavLink>
+                            <NavLink to="/product-category" className={({ isActive }) =>
+                                `dropdown-item ${isActive ? "active" : ""}`
+                            }>Product Category</NavLink>
+                        </div>
+                    </div>
+
                     <div className="nav-item dropdown">
                         <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                             className="fa fa-laptop me-2"></i>Page</a>
-      <div className={`dropdown-menu bg-transparent border-0 ${isPageActive ? "show" : ""}`}>
+                        <div className={`dropdown-menu bg-transparent border-0 ${isPageActive ? "show" : ""}`}>
                             <NavLink to="/all-page" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
                             }>All Page</NavLink>

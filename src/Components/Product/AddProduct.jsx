@@ -4,11 +4,14 @@ import { Toasts } from "../../Utils/Toasts";
 import Constant from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 
-const AddMedia = () => {
+const AddProduct = () => {
     const [formData, setformData] = useState({
-        media_name: "",
-        file: null,
+        product_name: "",
+        product_slug: "",
+        product_desc: "",
+        product_image: null,
     })
+
 
     var allowedMimes = ["png", "jpg", "jpeg", "gif"]; //allowed image mime types
     var maxMb = 2; //maximum allowed size (MB) of image
@@ -35,44 +38,26 @@ const AddMedia = () => {
             reader.readAsDataURL(fileInput.files[0]);
             const file = fileInput.files[0];
 
-            setformData({ ...formData, file });
+            setformData({ ...formData, product_image:file });
         }
     }
 
-    // useEffect(() => {
-    //     console.log("Updated formData:", formData);
-    // }, [formData]);
-
-    const navigate=useNavigate()
-    const submitForm = () => {
-        let required = document.getElementsByClassName("required");
-        let counter = 0
-        for (let i = 0; i < required.length; i++) {
-            if (required[i].value === "") {
-                required[i].style.border = "1px solid red";
-                counter++
-            }
-        }
-        if (counter > 0) {
-            Toasts.error("Please Fill Required Field")
-            return false
-        } else {
-        ApiService.postData("media/add-media-process", formData, true).then((res) => {
-            if (res?.status === 200) {
-                navigate("/all-media")
-                Toasts.sucess(res?.msg)
-            } else {
-                Toasts.error(res?.msg)
-            }
+    const namechangemetaupdate = (e) => {
+        const productslug = e.target.value.trim().toLowerCase().replace(/\s+/g, "-");
+        setformData({
+            ...formData, "product_name": e.target.value, "product_slug": productslug
         })
-    }   
 
     }
 
     const changeValue = (e) => {
-            setformData({ ...formData, [e.target.name]: e.target.value })
+        setformData({ ...formData, [e.target.name]: e.target.value })
     }
 
+    const submitForm=()=>{
+        console.log(formData);
+        
+    }
     return (
         <>
             <div className="page-content">
@@ -81,11 +66,11 @@ const AddMedia = () => {
                         <div className="col-12">
                             <div className="page-title-box d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h4 className="mb-sm-0">Manage Add Media</h4>
+                                    <h4 className="mb-sm-0">Manage Add Product</h4>
                                     <div className="page-title-right">
                                         <ol className="breadcrumb m-0">
-                                            <li className="breadcrumb-item"><a href="javascript: void(0);">Add Media</a></li>
-                                            <li className="breadcrumb-item active">Manage Add Media</li>
+                                            <li className="breadcrumb-item"><a href="javascript: void(0);">Add Product</a></li>
+                                            <li className="breadcrumb-item active">Manage Add Product</li>
                                         </ol>
                                     </div>
                                 </div>
@@ -99,19 +84,39 @@ const AddMedia = () => {
                                 <div className="card-header">
                                     <div className="row align-items-center gy-3">
                                         <div className="col-sm">
-                                            <h5 className="card-title my-1">Add Media</h5>
+                                            <h5 className="card-title my-1">Add Product</h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="card-body justify-content-sm-center">
                                     <div className="row">
-                                        <div className="col-lg-12">
+                                        <div className="col-lg-6">
                                             <div className="mb-3">
-                                                <label className="form-label">Media Name: <span style={{ color: "red" }}>*</span></label>
+                                                <label className="form-label">Product Name: <span style={{ color: "red" }}>*</span></label>
                                                 <input type="text"
                                                     className="form-control required"
-                                                    placeholder="Media Name"
-                                                    name="media_name" onChange={changeValue} value={formData.media_name} />
+                                                    placeholder="Product Name"
+                                                    name="product_name" onChange={changeValue} onBlur={namechangemetaupdate} value={formData.product_name} />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="mb-3">
+                                                <label className="form-label">Product Slug: <span style={{ color: "red" }}>*</span></label>
+                                                <input type="text"
+                                                    className="form-control required " placeholder="slug"
+                                                    readOnly
+                                                    value={formData?.product_slug}
+                                                    name="product_slug" />
+
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-12">
+                                            <div className="mb-3">
+                                                <label className="form-label">Product Desc: <span style={{ color: "red" }}>*</span></label>
+                                                <textarea type="text"
+                                                    className="form-control ckeditor" id="product_desc"
+                                                    placeholder="Product Desc"
+                                                    name="product_desc" onChange={changeValue} value={formData.product_desc} ></textarea>
                                             </div>
                                         </div>
                                         <div className="col-lg-12">
@@ -122,7 +127,7 @@ const AddMedia = () => {
                                                         <label className="form-label">Media Image:<span
                                                             style={{ color: "red" }}>*</span></label>
                                                         <div className="input-group">
-                                                            <input type="file" className="form-control " id="imageFile" name="file"
+                                                            <input type="file" className="form-control " id="imageFile" name="product_image"
                                                                 accept="image/png, image/gif, image/jpeg"
                                                                 onChange={(e) => imageValidation(imageFile)} />
 
@@ -149,4 +154,4 @@ const AddMedia = () => {
         </>
     )
 }
-export default AddMedia
+export default AddProduct

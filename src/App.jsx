@@ -11,6 +11,9 @@ import ApiService from './Utils/ApiService'
 import AllUser from './Components/User/AllUser'
 import AddMedia from './Components/Media/AddMedia'
 import AllMedia from './Components/Media/AllMedia'
+import AllProduct from './Components/Product/AllProduct'
+import AddProduct from './Components/Product/AddProduct'
+import ProductCategory from './Components/Product/ProductCategory'
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
@@ -66,6 +69,10 @@ function App() {
                 <Route path='/add-page' element={<AddPage />} />
                 <Route path='/all-media' element={<AllMedia />} />
                 <Route path='/add-media' element={<AddMedia />} />
+
+                <Route path='/all-product' element={<AllProduct />} />
+                <Route path='/add-product' element={<AddProduct />} />
+                <Route path='/product-category' element={<ProductCategory />} />
                 <Route path='/add-page/:id' element={<AddPage />} />
                 <Route path='/*' element={<Navigate to="/" replace />} />
               </Routes>
