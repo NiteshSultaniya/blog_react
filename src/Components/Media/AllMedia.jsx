@@ -35,9 +35,6 @@ const AllMedia = () => {
     }
     const deleteconfirm = (e) => {
         let deleteomfirmation = confirm("Are You Sure You Wnat to Delete It?")
-
-        // console.log(newmediaData)
-        // return false 
         if (!deleteomfirmation) {
             return false
         }

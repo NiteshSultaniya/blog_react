@@ -43,7 +43,7 @@ const AddMedia = () => {
     //     console.log("Updated formData:", formData);
     // }, [formData]);
 
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const submitForm = () => {
         let required = document.getElementsByClassName("required");
         let counter = 0
@@ -57,20 +57,20 @@ const AddMedia = () => {
             Toasts.error("Please Fill Required Field")
             return false
         } else {
-        ApiService.postData("media/add-media-process", formData, true).then((res) => {
-            if (res?.status === 200) {
-                navigate("/all-media")
-                Toasts.sucess(res?.msg)
-            } else {
-                Toasts.error(res?.msg)
-            }
-        })
-    }   
+            ApiService.postFile("media/add-media-process", formData).then((res) => {
+                if (res?.status === 200) {
+                    navigate("/all-media")
+                    Toasts.sucess(res?.msg)
+                } else {
+                    Toasts.error(res?.msg)
+                }
+            })
+        }
 
     }
 
     const changeValue = (e) => {
-            setformData({ ...formData, [e.target.name]: e.target.value })
+        setformData({ ...formData, [e.target.name]: e.target.value })
     }
 
     return (

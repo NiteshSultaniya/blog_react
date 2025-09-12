@@ -20,7 +20,7 @@ client.interceptors.response.use(
     },
 );
 
-function getAuthToken(isFileUpload) {
+function getAuthToken() {
     let tokenn = localStorage.getItem("TOKEN");
     let token = JSON.parse(tokenn);
     let config = "";
@@ -30,18 +30,9 @@ function getAuthToken(isFileUpload) {
         }
     }
     else {
-        // console.log(token)
-        // config = {
-        //     headers: { "Authorization": `Bearer ${token}`}
-        // }
-        let headers={};
-         headers["Authorization"] = `Bearer ${token}` ;
-        if (isFileUpload) {
-            headers["Content-Type"] = "multipart/form-data";
-        }
-
+        let headers = {};
+        headers["Authorization"] = `Bearer ${token}`;
         config = { headers };
-
     }
     return config;
 }
@@ -58,7 +49,7 @@ export default class ApiService {
         }
     }
 
-    static async postData(url, data, isFileUpload=false) {
+    static async postData(url, data, isFileUpload = false) {
         try {
             const response = await client.post(url, data, getAuthToken(isFileUpload));
             return response.data;
@@ -67,6 +58,23 @@ export default class ApiService {
             Toasts.error("Network Error")
             return e.response.data
             // console.log(e.response.data)
+        }
+    }
+    static async postFile(url, data) {
+        try {
+            let tokenn = localStorage.getItem("TOKEN");
+            let token = JSON.parse(tokenn);
+            const response = await client.post(url, data, {
+                headers: {
+                    "Authorization": token ? `Bearer ${token}` : `Bearer `,
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            return response.data;
+        }
+        catch (e) {
+            Toasts.error("Network Error")
+            return e.response.data
         }
     }
 
