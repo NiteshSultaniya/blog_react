@@ -72,6 +72,7 @@ function App() {
 
                 <Route path='/all-product' element={<AllProduct />} />
                 <Route path='/add-product' element={<AddProduct />} />
+                <Route path='/add-product/:id' element={<AddProduct />} />
                 <Route path='/product-category' element={<ProductCategory />} />
                 <Route path='/add-page/:id' element={<AddPage />} />
                 <Route path='/*' element={<Navigate to="/" replace />} />

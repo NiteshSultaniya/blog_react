@@ -2,10 +2,58 @@ import { useEffect, useRef, useState } from "react"
 import ApiService from "../../Utils/ApiService"
 import { Toasts } from "../../Utils/Toasts"
 import { NavLink } from "react-router-dom"
+import Constant from "../../Utils/Constant"
 
 const AllProduct = () => {
 
+    // const [productData, setproductData] = useState([])
     const [productData, setproductData] = useState([])
+    const [product_image_path, setproduct_image_path] = useState([])
+    const didMountRef = useRef(true)
+
+    useEffect(() => {
+        if (didMountRef.current) {
+
+            ApiService.fetchData("product/all-product").then((res) => {
+                if (res?.status == 200) {
+                    setproductData(res?.data)
+                    setproduct_image_path(res?.product_image_path)
+                }
+            })
+        }
+        didMountRef.current = false
+    }, [])
+
+
+    const statusChange = (e) => {
+        console.log(e)
+        ApiService.fetchData(`product/product-status-update/${e}`).then((res) => {
+            if (res?.status === 200) {
+                window.location.reload()
+            } else {
+                Toasts.error(res?.msg)
+            }
+        })
+    }
+    const deleteconfirm = (e) => {
+        let deleteomfirmation = confirm("Are You Sure You Wnat to Delete It?")
+        if (!deleteomfirmation) {
+            return false
+        }
+
+        ApiService.fetchData(`product/product-delete/${e}`).then((res) => {
+            if (res?.status === 200) {
+                Toasts.sucess(res?.msg)
+                setproductData(productData.filter((value, index) => {
+                    return value.id !== e
+                }))
+            } else {
+                Toasts.error(res?.msg)
+            }
+        })
+    }
+
+   
     return <>
 
         <div className="container-fluid">
@@ -47,7 +95,7 @@ const AllProduct = () => {
                                                 <th style={{ width: "60px" }}>S.no.</th>
                                                 <th className="text-center">Product</th>
                                                 <th className="text-center">Product Name</th>
-                                                <th className="text-center">Product Url</th>
+                                                <th className="text-center">Product Quantity</th>
                                                 <th className="text-center">Status</th>
                                                 <th className="text-center">Action</th>
                                             </tr>
@@ -60,10 +108,11 @@ const AllProduct = () => {
                                                         <tr key={value?.id}>
                                                             <th >{index + 1}</th>
                                                             <td className="text-center">
-                                                                <img style={{ objectFit: "cover", width: "50px", height: "50px" }} src={product_image_path ? product_image_path + value.product_url : ""} alt="" />
+                                                                <img style={{ objectFit: "cover", width: "50px", height: "50px" }} src={value?.productImage ? product_image_path + value?.productImage : Constant.DEFAULT_IMAGE} alt="" />
                                                             </td>
-                                                            <td className="text-center">{value?.product_name}</td>
-                                                            <td className="text-center"> <a href={product_image_path ? product_image_path + value.product_url : ""} target="_new">{product_image_path ? product_image_path + value.product_url : ""}</a> </td>
+                                                            <td className="text-center">{value?.productName}</td>
+                                                            <td className="text-center">{value?.productQuantity}</td>
+
 
                                                             {value?.status == 1 ? <>
                                                                 <td className="text-center"><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>
@@ -71,11 +120,10 @@ const AllProduct = () => {
                                                             </> : <>
                                                                 <td className="text-center"><button className="btn" onClick={(e) => statusChange(value?.id)}><span className="badge bg-danger-subtle text-uppercase">Inactive</span></button>
                                                                 </td>
-
                                                             </>}
-
                                                             <td className="text-center">
-
+                                                             <NavLink to={`/add-product/${value?.id}`} className="btn btn-info btn-sm btnaction"><i
+                                                                    className="fas fa-pencil-alt"></i></NavLink>
                                                                 <button
                                                                     onClick={(e) => deleteconfirm(value?.id)}
                                                                     className="btn btn-danger  btn-sm btnaction"><i

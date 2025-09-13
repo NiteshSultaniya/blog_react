@@ -16,7 +16,7 @@ export class Toasts {
     static error(msg) {
         toast.error(msg, {
             position: "bottom-center",
-            autoClose: 2000,
+            autoClose: false,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
