@@ -33,9 +33,9 @@ function App() {
           if (res?.status === 200) {
             setisadminValid(true)
             setIsLoading(false)
-          }else if(res?.status === 401){
+          } else if (res?.status === 401) {
             localStorage.removeItem("TOKEN")
-          setIsLoading(false)
+            setIsLoading(false)
           }
         })
       }
@@ -49,7 +49,8 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
+    
+      <BrowserRouter basename="/admin">
         <ToastContainer />
         {
           !isadminValid ? <>
@@ -82,6 +83,7 @@ function App() {
           </>
         }
       </BrowserRouter>
+      
     </>
   )
 }

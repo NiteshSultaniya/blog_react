@@ -1,10 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ApiService from "../../Utils/ApiService";
 import { Toasts } from "../../Utils/Toasts";
 import Constant from "../../Utils/Constant";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 const AddProduct = () => {
+
+
+
+    const [selectedCats, setSelectedCats] = useState([])
+    const [categoryData, setcategoryData] = useState([])
+    const [productImage, setProductImage] = useState("")
+    const [productImageURL, setProductImageURL] = useState("")
     const [formData, setformData] = useState({
         id: 0,
         productName: "",
@@ -18,12 +25,11 @@ const AddProduct = () => {
         metaTitle: "",
         metaKeyword: "",
         metaDescription: "",
+        productCatId: selectedCats,
         file: "fgdfg",
     })
-    const [productImage, setProductImage] = useState("")
-    const [productImageURL, setProductImageURL] = useState("")
-
     const didMountRef = useRef(true)
+    const navigate=useNavigate()
     const slug = useParams()
     useEffect(() => {
         if (didMountRef.current) {
@@ -31,13 +37,22 @@ const AddProduct = () => {
                 ApiService.fetchData(`product/find-product-by-id/${slug?.id}`).then((res) => {
                     if (res?.status === 200) {
                         setformData(res?.data)
+                        // setformData({...formData,productCatId:res?.data?.productCatId.split(",").map(id => Number(id))})
                         setProductImage(res?.data?.productImage)
                         setProductImageURL(res?.product_image_path)
+                        setSelectedCats(res?.data?.productCatId.split(",").map(id => Number(id)));
+
                     } else {
                         Toasts.error(res?.msg)
                     }
                 })
             }
+            ApiService.fetchData("product/get-category-data").then((res) => {
+                if (res?.status === 200) {
+                    setcategoryData(res?.data)
+                }
+            })
+
         }
         didMountRef.current = false
     }, [])
@@ -48,8 +63,6 @@ const AddProduct = () => {
 
     const imageValidation = (imageFile) => {
         var fileInput = document.getElementById("imageFile");
-        // console.log(fileInput);
-        // return false
 
         var mime = fileInput.value.split(".").pop();
         var fsize = fileInput.files[0].size;
@@ -58,7 +71,6 @@ const AddProduct = () => {
         if (mb > maxMb) {
             alert("Image size must be less than 2mb");
         } else if (!allowedMimes.includes(mime)) {
-            // if allowedMimes array does not have the extension
             alert("Only png, jpg, jpeg alowed");
         } else {
             let reader = new FileReader();
@@ -77,11 +89,32 @@ const AddProduct = () => {
         setformData({
             ...formData, "productName": e.target.value, "productSlug": productslug
         })
-
     }
 
     const changeValue = (e) => {
-        setformData({ ...formData, [e.target.name]: e.target.value })
+        if (e.target.name === "productCatId") {
+
+            if(selectedCats.includes(Number(e.target.id)))
+            {
+                setSelectedCats((prev) => {
+                    const updated = prev.filter((id) => id !== Number(e.target.id));
+                    
+                    setformData({ ...formData, productCatId: updated });
+                    return updated;
+                });
+       
+            }else{
+                setSelectedCats((prev) => {
+                    const updated = [...prev, Number(e.target.id)];
+                    setformData({ ...formData, productCatId: updated });
+                    return updated;
+                });
+            } 
+            
+        } else {
+            setformData({ ...formData, [e.target.name]: e.target.value })
+        }
+
     }
 
     function priceCheck(event) {
@@ -129,13 +162,16 @@ const AddProduct = () => {
         }
     }
 
-
-
     const submitForm = () => {
-        console.log(formData);
+        
         let required = document.getElementsByClassName("required");
         let counter = 0
         for (let i = 0; i < required.length; i++) {
+            if(!(formData.productCatId.length>0))
+            {
+                alert("Select Category First")
+                return false
+            }
             if (required[i].value === "") {
                 required[i].style.border = "1px solid red";
                 counter++
@@ -147,8 +183,7 @@ const AddProduct = () => {
         } else {
             ApiService.postFile("product/product-add-process", formData).then((res) => {
                 if (res?.status === 200) {
-                    // navigate("/all-media")
-                    // window.location.reload()
+                    navigate("/all-product")
                     Toasts.sucess(res?.msg)
                 } else {
                     Toasts.error(res?.msg)
@@ -157,6 +192,8 @@ const AddProduct = () => {
         }
 
     }
+
+    
     return (
         <>
             <div className="page-content">
@@ -333,9 +370,7 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="card-footer  d-flex justify-content-between">
-                                    <button type="button" onClick={submitForm} className="btn btn-success">Save</button>
-                                </div>
+
                             </div>
                         </div>
                         <div className="col-lg-4">
@@ -351,7 +386,7 @@ const AddProduct = () => {
                                     <div className="row">
                                         <div className="col-lg-12">
                                             <div className="mb-3">
-                                                <button type="button" id="button" className="btn btn-success" >
+                                                <button type="button" id="button" className="btn btn-success" onClick={submitForm}>
                                                     Publish
                                                 </button>
                                             </div>
@@ -366,13 +401,20 @@ const AddProduct = () => {
                                     <div className="row">
                                         <div className="col-lg-12">
                                             <div className="mb-3">
-                                                <p style={{lineHeight: "20px"}}><small className="text-muted">Select category in which you want to display this blog. You can also select multiple categories for this blog.</small></p>
-                                                <div style={{height: "250px", overflowX: "hidden", border: "1px solid #5d5959", padding: "10px", background:" #414141"}}>
+                                                <p style={{ lineHeight: "20px" }}><small className="text-muted">Select category in which you want to display this blog. You can also select multiple categories for this blog.</small></p>
+                                                <div style={{ height: "250px", overflowX: "hidden", border: "1px solid #5d5959", padding: "10px", background: " #414141" }}>
 
-                                                    <div className="form-check form-check-inline" style={{width: "100%", marginBottom: "10px",marginLeft:"0px", cursor:"pointer"}}>
-                                                        <input className="form-check-input categorychcked" style={{cursor:"pointer"}} type="checkbox" id="inlineCheckbox{{ $count }}" value="{{ $data-> cat_id}}" name="category_id[]" />
-                                                        <label className="form-check-label" style={{cursor:"pointer" }} htmlFor="inlineCheckbox1">MEN</label>
-                                                    </div>
+                                                    {categoryData && categoryData.length > 0 ?
+                                                        categoryData.map((value, index) =>
+                                                        
+                                                            <React.Fragment key={index}>
+                                                                <div className="form-check form-check-inline" style={{ width: "100%", marginBottom: "10px", marginLeft: "0px", cursor: "pointer" }}>
+                                                                    <input className="form-check-input" style={{ cursor: "pointer" }} type="checkbox" id={value?.cat_id} name="productCatId" onChange={changeValue} checked={selectedCats.includes(value?.cat_id)}/>
+                                                                    <label className="form-check-label" style={{ cursor: "pointer" }} htmlFor={value?.cat_id}>{value?.cat_name}</label>
+                                                                </div>
+                                                            </React.Fragment>
+                                                        )
+                                                        : <></>}
 
                                                 </div>
                                             </div>
@@ -382,34 +424,8 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* <!-- <div className="card-footer"> <a href="https://bybv.in/csadmin/category" target="_blank">+ Add New Category</a> </div> --> */}
                             </div>
-                            {/* <div className="card bg-secondary rounded p-2 mb-2">
-                                <div className="card-header">
-                                    <div className="row align-items-center gy-3">
-                                        <div className="col-sm">
-                                            <h5 className="card-title my-1">Product Image</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card-body justify-content-sm-center bordered">
-                                    <div className="row">
-                                        <div className="col-lg-12">
-                                            <div className="mb-3">
-                                                <div className="">
-                                                    <img className="fileimg-preview logoimage mediaImage mt-2" src="" style={{height: "225px", width: "100%", objectFit: 'contain', border: "1px solid rgba(72, 94, 144, 0.16)", cursor:"pointer"}} />
-                                                    <div style="width:100%" className="text-center">
-                                                        <div className="input-group mb-2 d-none">
-                                                            <input type="file" className="form-control " id="imageFile" name="product_image" accept="image/png, image/gif, image/jpeg" />
-                                                        </div>
-                                                        <small className="text-muted " style="font-size:11px;">Accepted: gif, png, jpg. Max file size 2Mb</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> */}
+
                         </div>
                     </div>
                 </div>
