@@ -72,6 +72,7 @@ function App() {
                 <Route path='/add-media' element={<AddMedia />} />
 
                 <Route path='/all-product' element={<AllProduct />} />
+                <Route path='/all-product/:filterstatusslug' element={<AllProduct />} />
                 <Route path='/add-product' element={<AddProduct />} />
                 <Route path='/add-product/:id' element={<AddProduct />} />
                 <Route path='/product-category' element={<ProductCategory />} />
