@@ -31,7 +31,7 @@ const MenuSideBar = () => {
                 </div>
                 <div className="navbar-nav w-100">
 
-                    <NavLink to="/" className={({ isActive }) =>
+                    <NavLink to="/dashboard" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
                     <NavLink to="/user" className={({ isActive }) =>

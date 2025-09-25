@@ -14,6 +14,7 @@ import AllMedia from './Components/Media/AllMedia'
 import AllProduct from './Components/Product/AllProduct'
 import AddProduct from './Components/Product/AddProduct'
 import ProductCategory from './Components/Product/ProductCategory'
+import {jwtDecode} from "jwt-decode";
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
@@ -29,6 +30,11 @@ function App() {
         setIsLoading(false)
       }
       else {
+        const token = localStorage.getItem("TOKEN");
+        if (token) {
+          const decoded = jwtDecode(token);
+          console.log("Role:", decoded); // safe, from backend
+        }
         ApiService.fetchData("verify").then((res) => {
           if (res?.status === 200) {
             setisadminValid(true)
@@ -49,22 +55,20 @@ function App() {
 
   return (
     <>
-    
-      <BrowserRouter basename="/admin">
+
+      <BrowserRouter basename='/admin'>
         <ToastContainer />
         {
           !isadminValid ? <>
-
             <Routes>
-              <Route path='/' element={<Login />} />
-              <Route path='/*' element={<Navigate to="/" replace />} />
-
+              <Route path='/login' element={<Login />} />
+              <Route path='/*' element={<Navigate to="/login" replace />} />
             </Routes>
           </> : <>
             <MenuBar />
             <div className="content">
               <Routes>
-                <Route path='/' element={<Dashboard />} />
+                <Route path='/dashboard' element={<Dashboard />} />
                 <Route path='/all-page' element={<AllPage />} />
                 <Route path='/user' element={<AllUser />} />
                 <Route path='/add-page' element={<AddPage />} />
@@ -83,8 +87,9 @@ function App() {
 
           </>
         }
+
       </BrowserRouter>
-      
+
     </>
   )
 }
