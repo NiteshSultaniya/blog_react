@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import ApiService from "../../Utils/ApiService"
 import { Toasts } from "../../Utils/Toasts"
-import { NavLink } from "react-router-dom"
+import { NavLink, useParams } from "react-router-dom"
 import Constant from "../../Utils/Constant"
 import InfiniteScroll from "react-infinite-scroll-component"
 
@@ -11,30 +11,13 @@ const AllProduct = () => {
     const [productData, setproductData] = useState([])
     const [totalPages, settotalPages] = useState(0)
     const [currentPages, setcurrentPages] = useState(0)
+    const [allproductcount, setallproductcount] = useState(0)
+    const [activeproductcount, setactiveproductcount] = useState(0)
+    const [inactiveproductcount, setinactiveproductcount] = useState(0)
     const [product_image_path, setproduct_image_path] = useState([])
     const didMountRef = useRef(true)
-
-
-    const fetchProduct = (nextpage = 0) => {
-        // console.log(nextpage);
-
-        ApiService.fetchData(`product/all-product?page=${nextpage}&size=5`).then((res) => {
-            if (res?.status == 200) {
-                setproductData(prev => [...prev, ...res.data.content]);
-                // productData.push(res?.data?.content)
-                setproduct_image_path(res?.product_image_path)
-                settotalPages(res?.data?.totalPages)
-                // setcurrentPages(res?.data?.number)
-                // console.log(productData);
-
-            }
-        })
-    }
-
-
-
-
-
+    const {filterstatusslug}=useParams()
+    // console.log(filterstatusslug)
     useEffect(() => {
         if (didMountRef.current) {
             fetchProduct()
@@ -42,31 +25,35 @@ const AllProduct = () => {
         didMountRef.current = false
     }, [])
 
-
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
-        if (scrollTop + clientHeight >= scrollHeight - 10) {
-                console.log("productData");
-
-            // setcurrentPages(currentPages + 1)
-            setcurrentPages(()=>{
-                nextpage()
-                
-                return currentPages+1})
-
+        const isNearBottom = scrollTop + clientHeight >= scrollHeight - 10;
+        if (isNearBottom) {
+            nextpage(currentPages + 1);
         }
     };
-    const nextpage = () => {
-        console.log(currentPages)
-        console.log(totalPages)
+
+    const nextpage = (currentPages) => {
+        setcurrentPages(currentPages)
         if (currentPages < totalPages) {
-            // setcurrentPages(currentPages + 1)
             fetchProduct(currentPages)
         }
     }
 
+    const [filterstatus,setfilterdata]=useState(filterstatusslug||"all")
+    const fetchProduct = (nextpage = 0) => {
+        ApiService.fetchData(`product/all-product?page=${nextpage}&size=15&filterstatus=${filterstatus}`).then((res) => {
+            if (res?.status == 200) {
+                setproductData(prev => [...prev, ...res?.data?.content]);
+                setproduct_image_path(res?.product_image_path)
+                settotalPages(res?.data?.totalPages)
+                setallproductcount(res?.allproductcount)
+                setactiveproductcount(res?.activeproductcount)
+                setinactiveproductcount(res?.inactiveproductcount)
+            }
+        })
+    }
     const statusChange = (e) => {
-        console.log(e)
         ApiService.fetchData(`product/product-status-update/${e}`).then((res) => {
             if (res?.status === 200) {
                 window.location.reload()
@@ -96,7 +83,7 @@ const AllProduct = () => {
 
     return <>
 
-        <div className="container-fluid">
+        <div className="container-fluid " >
             <div className="row">
                 <div className="col-12">
                     <div className="page-title-box d-flex justify-content-between align-items-center">
@@ -116,8 +103,10 @@ const AllProduct = () => {
                     </div>
                 </div>
             </div>
-            <div className="row">
+            <div className="row" >
                 <div className="col-12">
+                                    <div className="overflow-auto" style={{ maxHeight: "100vh"}} onScroll={handleScroll}>
+
                     <div className="card bg-secondary rounded h-100 p-4">
                         <div className="card-header">
                             <div className="row align-items-center gy-3">
@@ -126,10 +115,38 @@ const AllProduct = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="card-body">
+                            <div className="row align-items-center justify-content-between">
+                                <div className="col-lg-12 col-sm-12">
+                                    <ul className="nav nav-tabs nav-tabs-custom nav-success" role="tablist">
+                                        <li className="nav-item">
+                                            <a className={`nav-link py-3 ${filterstatus && filterstatus==="all" ?"product-status-active" :""}`} role="tab" href="/admin/all-product/all">
+                                                All <span
+                                                    className="badge bg-danger align-middle ms-1">{allproductcount}</span>
+                                            </a>
+                                        </li>
+                                        <li className="nav-item">
+                                            <a className={`nav-link py-3 ${filterstatus && filterstatus==="active" ?"product-status-active" :""}`}
+                                                href="/admin/all-product/active" role="tab">
+                                                Active <span
+                                                    className="badge bg-danger align-middle ms-1">{activeproductcount}</span>
+                                            </a>
+                                        </li>
+                                        <li className="nav-item">
+                                            <a className={`nav-link py-3 ${filterstatus && filterstatus==="inactive" ?"product-status-active" :""}`}
+                                                href="/admin/all-product/inactive" role="tab">
+                                                Inactive <span
+                                                    className="badge bg-danger align-middle ms-1">{inactiveproductcount}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
                         <div className="card-body justify-content-sm-center">
                             <div className="row align-items-center gy-3">
                                 <div className="col-lg-12">
-                                    <div style={{ maxHeight: "400px", overflowY: "auto" }} onScroll={handleScroll}>
 
                                         <table className="table">
                                             <thead>

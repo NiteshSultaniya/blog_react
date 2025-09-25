@@ -36,14 +36,14 @@ const MenuSideBar = () => {
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
                     <NavLink to="/user" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
-                    }><i className="fa fa-tachometer-alt me-2"></i>User</NavLink>
+                    }><i className="fa fa-user me-2"></i>User</NavLink>
                     <NavLink to="/all-media" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
-                    }><i className="fa fa-plant-wilt me-2"></i>Media</NavLink>
+                    }><i className="fa fa-image me-2"></i>Media</NavLink>
 
                     <div className="nav-item dropdown">
                         <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
-                            className="fa fa-laptop me-2"></i>Products</a>
+                            className="fa fa-shopping-bag me-2"></i>Products</a>
                         <div className={`dropdown-menu bg-transparent border-0 ${isproductactive ? "show" : ""}`}>
                             <NavLink to="/all-product" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
@@ -59,7 +59,7 @@ const MenuSideBar = () => {
 
                     <div className="nav-item dropdown">
                         <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                            className="fa fa-laptop me-2"></i>Page</a>
+                            className="fa fa-window-restore me-2"></i>Page</a>
                         <div className={`dropdown-menu bg-transparent border-0 ${isPageActive ? "show" : ""}`}>
                             <NavLink to="/all-page" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
