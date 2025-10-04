@@ -30,7 +30,7 @@ const Login = () => {
                     // console.log(res.token)
                     Toasts.sucess("Admin Login Successfully")
                     localStorage.setItem("TOKEN", `"${res?.token}"`)
-                    // window.location.reload()
+                    window.location.reload()
 
                 } else {
                     Toasts.error("Enter Valid Login Detail")

@@ -43,14 +43,14 @@ const AllUser = () => {
             return;
         }
         ApiService.fetchData(`user-status/${e}`).then((res) => {
-            window.location.reload()
-
             if (res?.status === "success") {
                 Toasts.sucess(res?.msg)
             } else {
 
                 Toasts.error(res?.msg)
             }
+            window.location.reload()
+
         })
     }
 
@@ -62,14 +62,14 @@ const AllUser = () => {
             return;
         }
         ApiService.fetchData(`user-delete/${e}`).then((res) => {
-            window.location.reload()
-
-            if (res?.status === "success") {
+            if (res?.status === 200) {
                 Toasts.sucess(res?.msg)
             } else {
 
                 Toasts.error(res?.msg)
             }
+            window.location.reload()
+
         })
     }
 
@@ -138,9 +138,9 @@ const AllUser = () => {
                                                     {userData.map((value, index) => (<>
                                                         <tr key={value?.id}>
                                                             <th>{index + 1}</th>
-                                                            <td>{value?.user_name}</td>
-                                                            <td>{value?.user_email}</td>
-                                                            <td>{value?.user_address}</td>
+                                                            <td>{value?.username}</td>
+                                                            <td>{value?.email}</td>
+                                                            <td>{value?.role}</td>
 
                                                             {value?.status == 1 ? <>
                                                                 <td className="text-center"><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>

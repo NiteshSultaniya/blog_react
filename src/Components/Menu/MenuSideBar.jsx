@@ -34,9 +34,24 @@ const MenuSideBar = () => {
                     <NavLink to="/dashboard" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
-                    <NavLink to="/user" className={({ isActive }) =>
+                    {/* <NavLink to="/user" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
-                    }><i className="fa fa-user me-2"></i>User</NavLink>
+                    }><i className="fa fa-user me-2"></i>User</NavLink> */}
+
+                     <div className="nav-item dropdown">
+                        <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
+                            className="fa fa-user me-2"></i>Role & Permission</a>
+                        <div className={`dropdown-menu bg-transparent border-0 ${isproductactive ? "show" : ""}`}>
+                            <NavLink to="/user" className={({ isActive }) =>
+                                `dropdown-item ${isActive ? "active" : ""}`
+                            }>User</NavLink>
+                            <NavLink to="/role" className={({ isActive }) =>
+                                `dropdown-item ${isActive ? "active" : ""}`
+                            }>Role</NavLink>
+                            
+                        </div>
+                    </div>
+
                     <NavLink to="/all-media" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-image me-2"></i>Media</NavLink>
