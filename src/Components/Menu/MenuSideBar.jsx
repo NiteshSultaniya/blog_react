@@ -45,7 +45,7 @@ const MenuSideBar = () => {
                             <NavLink to="/user" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
                             }>User</NavLink>
-                            <NavLink to="/role" className={({ isActive }) =>
+                            <NavLink to="/role-permission/role" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
                             }>Role</NavLink>
                             

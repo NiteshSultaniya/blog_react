@@ -20,6 +20,7 @@ const AllUser = () => {
     const hideloginmodal = () => {
         setmodelToggle(!modelToggle);
     }
+    const [roleData, setroleData] = useState({})
 
     useEffect(() => {
         if (didMountRef.current) {
@@ -27,6 +28,8 @@ const AllUser = () => {
             ApiService.fetchData("all-user").then((res) => {
                 if (res?.status === "success") {
                     setuserData(res?.data)
+                    setroleData(res?.roleData)
+
                     // console.log(res?.data)
                 }
             })
@@ -178,7 +181,7 @@ const AllUser = () => {
         </div>
 
         {
-            modelToggle && <UserModel modelToggle={modelToggle} hideloginmodal={hideloginmodal} editmodelToggle={editmodelToggle}/>
+            modelToggle && <UserModel modelToggle={modelToggle} hideloginmodal={hideloginmodal} editmodelToggle={editmodelToggle} roleData={roleData}/>
         }
 
     </>

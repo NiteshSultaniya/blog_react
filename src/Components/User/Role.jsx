@@ -6,7 +6,11 @@ const Role = () => {
 
     const didMountRef = useRef(true)
 
-    const [roleData, setRoleData] = useState({
+    const [roleData, setroleData] = useState({
+        "id": 0,
+        "roleName": "",
+    })
+    const [roleGetData, setroleGetData] = useState({
         "id": 0,
         "roleName": "",
     })
@@ -15,7 +19,7 @@ const Role = () => {
         if (didMountRef.current) {
             ApiService.fetchData("role-permission/role/all-role").then((res) => {
                 if (res?.status === 200) {
-                    setroleData(res?.data)
+                    setroleGetData(res?.data)
                 }
             })
         }
@@ -25,19 +29,19 @@ const Role = () => {
     const namechangemetaupdate = (e) => {
         const catSlug = e.target.value.trim().toLowerCase().replace(/\s+/g, "-");
         // setRoleData({roleData.cat_slug:catSlug})
-        setRoleData({
+        setroleData({
             ...roleData, "roleName": e.target.value
         })
     }
     const handleChange = (e) => {
-        setRoleData({
-            ...roleData, [e.target.name]: e.target.value
+        setroleData({
+            ...roleData, [e.target.name]: e.target.value.toUpperCase()
         })
     }
 
     const statusChange = (e) => {
 
-        ApiService.fetchData(`role-permission/role/role-update/${e}`).then((res) => {
+        ApiService.fetchData(`role-permission/role/role-status-update/${e}`).then((res) => {
             window.location.reload()
             if (res?.status === 200) {
                 Toasts.sucess(res?.msg)
@@ -54,7 +58,7 @@ const Role = () => {
         }
         ApiService.fetchData(`role-permission/role/role-delete/${e}`).then((res) => {
             if (res?.status === 200) {
-                setroleData(roleData.filter((value, index) => {
+                setroleGetData(roleGetData.filter((value, index) => {
                     return value.id !== e
                 }))
                 Toasts.sucess(res?.msg)
@@ -65,6 +69,8 @@ const Role = () => {
     }
 
     const submitForm = () => {
+        console.log(roleData);
+        
         let required = document.getElementsByClassName("required");
         let counter = 0
         for (let i = 0; i < required.length; i++) {
@@ -92,7 +98,7 @@ const Role = () => {
         ApiService.fetchData(`role-permission/role/find-role-by-id/${e}`).then((res) => {
             if (res?.status === 200) {
                 console.log(res?.data)
-                setRoleData(res?.data)
+                setroleData(res?.data)
             } else {
                 Toasts.error(res?.msg)
             }
@@ -107,11 +113,11 @@ const Role = () => {
                         <div className="col-12">
                             <div className="page-title-box d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h4 className="mb-sm-0">Manage Category</h4>
+                                    <h4 className="mb-sm-0">Manage Role</h4>
                                     <div className="page-title-right">
                                         <ol className="breadcrumb m-0">
-                                            <li className="breadcrumb-item"><a href="javascript: void(0);">Category</a></li>
-                                            <li className="breadcrumb-item active">Manage Category</li>
+                                            <li className="breadcrumb-item"><a href="javascript: void(0);">Role</a></li>
+                                            <li className="breadcrumb-item active">Manage Role</li>
                                         </ol>
                                     </div>
                                 </div>
@@ -122,13 +128,12 @@ const Role = () => {
                     <div className="row">
                         <div className="col-lg-4">
                             <div id="formsubmit">
-                                <input type="hidden" name="id"
-                                    value={roleData.id} />
+                                <input type="hidden" name="id" value={roleData?.id} />
                                 <div className="card bg-secondary rounded p-3">
                                     <div className="card-header">
                                         <div className="row align-items-center gy-3">
                                             <div className="col-sm">
-                                                <h5 className="card-title my-1">Add Category</h5>
+                                                <h5 className="card-title my-1">Add Role</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -136,27 +141,16 @@ const Role = () => {
                                         <div className="row">
                                             <div className="col-lg-12">
                                                 <div className="mb-3">
-                                                    <label className="form-label">Category Name: <span style={{ color: "red" }}>*</span></label>
+                                                    <label className="form-label">Role Name: <span style={{ color: "red" }}>*</span></label>
                                                     <input type="text"
                                                         className="form-control required" onChange={handleChange}
-                                                        placeholder="Menu Name" onBlur={namechangemetaupdate} id='roleName_id'
+                                                        placeholder="Role Name" onBlur={namechangemetaupdate} id='roleName_id'
                                                         value={roleData?.roleName}
                                                         name="roleName" />
 
                                                 </div>
                                             </div>
 
-                                            <div className="col-lg-12">
-                                                <div className="mb-3">
-                                                    <label className="form-label">Category Slug: <span style={{ color: "red" }}>*</span></label>
-                                                    <input type="text"
-                                                        className="form-control required " placeholder="slug"
-                                                        id="cat_slug_id" readOnly
-                                                        value={roleData?.cat_slug}
-                                                        name="cat_slug" />
-
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     <div className="card-footer  d-flex justify-content-between">
@@ -172,7 +166,7 @@ const Role = () => {
                                 <div className="card-header">
                                     <div className="row align-items-center gy-3">
                                         <div className="col-sm">
-                                            <h5 className="card-title my-1">Category</h5>
+                                            <h5 className="card-title my-1">Role</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -183,15 +177,15 @@ const Role = () => {
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "60px" }}>S.no.</th>
-                                                        <th>Category Name</th>
+                                                        <th>Role Name</th>
                                                         <th className="text-center">Status</th>
                                                         <th className="text-center">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
 
-                                                    {roleData && roleData.length > 0 ?
-                                                        roleData.map((value, index) =>
+                                                    {roleGetData && roleGetData.length > 0 ?
+                                                        roleGetData.map((value, index) =>
                                                             <React.Fragment key={index}>
                                                                 <tr >
                                                                     <th>{index + 1}</th>

@@ -6,7 +6,7 @@ import AllPage from './Components/Page/AllPage'
 import AddPage from './Components/Page/AddPage'
 import { ToastContainer } from 'react-toastify'
 import Login from './Components/Login/Login'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import ApiService from './Utils/ApiService'
 import AllUser from './Components/User/AllUser'
 import AddMedia from './Components/Media/AddMedia'
@@ -15,26 +15,26 @@ import AllProduct from './Components/Product/AllProduct'
 import AddProduct from './Components/Product/AddProduct'
 import ProductCategory from './Components/Product/ProductCategory'
 import {jwtDecode} from "jwt-decode";
+import Role from './Components/User/Role'
+import DataContext from './Utils/DataContext'
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const didMountRef = useRef(true)
-
+  const {userRole}=useContext(DataContext)
+  
   let token = JSON.parse(localStorage.getItem("TOKEN"))
-
+  
   useEffect(() => {
     if (didMountRef.current) {
+      console.log(typeof(userRole))
       if (token == undefined || token == null || token == "") {
         setisadminValid(false)
         setIsLoading(false)
       }
       else {
-        const token = localStorage.getItem("TOKEN");
-        if (token) {
-          const decoded = jwtDecode(token);
-          console.log("Role:", decoded); // safe, from backend
-        }
+
         ApiService.fetchData("verify").then((res) => {
           if (res?.status === 200) {
             setisadminValid(true)
@@ -81,6 +81,20 @@ function App() {
                 <Route path='/add-product/:id' element={<AddProduct />} />
                 <Route path='/product-category' element={<ProductCategory />} />
                 <Route path='/add-page/:id' element={<AddPage />} />
+
+
+                {/* Role And Permisssion */}
+                <Route path='/role-permission/role' element={<Role />} />
+                {/* Role And Permisssion End */}
+
+
+
+
+
+
+
+
+
                 <Route path='/*' element={<Navigate to="/" replace />} />
               </Routes>
             </div>

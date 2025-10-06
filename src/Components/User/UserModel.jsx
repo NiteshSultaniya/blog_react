@@ -5,7 +5,7 @@ import ApiService from '../../Utils/ApiService';
 import { Toasts } from '../../Utils/Toasts';
 
 
-const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
+const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle ,roleData}) => {
 
 
     const [formData, setformData] = useState({
@@ -18,27 +18,26 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
 
     })
 
-    const [passwordCondition,setpasswordCondition]=useState(true)
+    const [passwordCondition, setpasswordCondition] = useState(true)
     const didMountRef = useRef(true)
     useEffect(() => {
         if (didMountRef.current) {
             if (editmodelToggle !== "") {
-                console.log(editmodelToggle);
-                // setformData(editmodelToggle)
-                setformData({...editmodelToggle,password:""})
+                setformData({ ...editmodelToggle, password: "" })
             }
         }
         didMountRef.current = false
     }, [])
 
+    console.log(roleData);
+    
 
     const changeValue = (e) => {
-       
-            if(e.target.name==="password")
-            {
-                setpasswordCondition(false)
-            }
-            setformData({ ...formData, [e.target.name]: e.target.value })
+
+        if (e.target.name === "password") {
+            setpasswordCondition(false)
+        }
+        setformData({ ...formData, [e.target.name]: e.target.value })
     }
     const formLogin = (e) => {
         let required = document.getElementsByClassName("required");
@@ -103,18 +102,18 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
                                 <div className="col-lg-12">
                                     <div className="mb-3">
                                         <label className="form-label">User Password: <span style={{ color: "red" }}>*</span></label>
-                                        {passwordCondition && formData.id !==0 ?
-                                        <> <input type="password"
-                                            className={`form-control ${formData.id > 0 ? "" : "required"}`}
-                                            placeholder="*****"
-                                            name="password" onChange={changeValue} value={""}/></>
-                                        :<>
-                                             <input type="password"
-                                            className={`form-control ${formData.id > 0 ? "" : "required"}`}
-                                            placeholder={`${formData.id > 0 ? "********" : "Password"}`}
-                                            name="password" onChange={changeValue} value={formData.password} />
-                                        </>}
-                                       
+                                        {passwordCondition && formData.id !== 0 ?
+                                            <> <input type="password"
+                                                className={`form-control ${formData.id > 0 ? "" : "required"}`}
+                                                placeholder="*****"
+                                                name="password" onChange={changeValue} value={""} /></>
+                                            : <>
+                                                <input type="password"
+                                                    className={`form-control ${formData.id > 0 ? "" : "required"}`}
+                                                    placeholder={`${formData.id > 0 ? "********" : "Password"}`}
+                                                    name="password" onChange={changeValue} value={formData.password} />
+                                            </>}
+
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
@@ -126,7 +125,7 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
                                             name="email" onChange={changeValue} value={formData.email} />
                                     </div>
                                 </div>
-                                 <div className="col-lg-12">
+                                <div className="col-lg-12">
                                     <div className="mb-3">
                                         <label className="form-label">User Mobile: <span style={{ color: "red" }}>*</span></label>
                                         <input type="text"
@@ -136,19 +135,27 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
-                                            <div className="mb-3">
-                                                <label className="form-label">Role: <span style={{ color: "red" }}>*</span></label>
-                                                <select className="form-control required" onChange={changeValue} value={formData.role} name="role" placeholder="Select Role">
-                                                    <option value="">Select Role</option>
-                                                    <option value="ADMIN">ADMIN</option>
-                                                    <option value="SELLER">SELLER</option>
-                                                    <option value="CUSTOMER">CUSTOMER</option>
-                                                </select>
+                                    <div className="mb-3">
+                                        <label className="form-label">Role: <span style={{ color: "red" }}>*</span></label>
+                                        <select className="form-control required" onChange={changeValue} value={formData.role} name="role" placeholder="Select Role">
+                                            <option value="">Select Role</option>
+                                            {roleData && roleData.length > 0 ?
+                                                roleData.map((data) =>(
+                                                    <>
+                                                        <option value={data?.roleName}>{data?.roleName}</option>
+                                                        
+                                                    </>
+                                                ))
+                                                : <>
 
-                                            </div>
-                                        </div>
-                               
-                                
+                                                </>}
+
+                                        </select>
+
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                     </Modal.Body>
