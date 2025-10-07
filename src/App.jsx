@@ -17,18 +17,20 @@ import ProductCategory from './Components/Product/ProductCategory'
 import {jwtDecode} from "jwt-decode";
 import Role from './Components/User/Role'
 import DataContext from './Utils/DataContext'
+import Permission from './Components/User/Permission'
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const didMountRef = useRef(true)
-  const {userRole}=useContext(DataContext)
   
   let token = JSON.parse(localStorage.getItem("TOKEN"))
   
   useEffect(() => {
     if (didMountRef.current) {
-      console.log(typeof(userRole))
+      // console.log(typeof(userRole))
+      // console.log(userRole);
+      
       if (token == undefined || token == null || token == "") {
         setisadminValid(false)
         setIsLoading(false)
@@ -70,7 +72,6 @@ function App() {
               <Routes>
                 <Route path='/dashboard' element={<Dashboard />} />
                 <Route path='/all-page' element={<AllPage />} />
-                <Route path='/user' element={<AllUser />} />
                 <Route path='/add-page' element={<AddPage />} />
                 <Route path='/all-media' element={<AllMedia />} />
                 <Route path='/add-media' element={<AddMedia />} />
@@ -84,13 +85,11 @@ function App() {
 
 
                 {/* Role And Permisssion */}
+                <Route path='/user' element={<AllUser />} />
+
                 <Route path='/role-permission/role' element={<Role />} />
+                <Route path='/role-permission/permission' element={<Permission />} />
                 {/* Role And Permisssion End */}
-
-
-
-
-
 
 
 

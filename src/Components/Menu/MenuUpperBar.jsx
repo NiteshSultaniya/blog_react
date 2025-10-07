@@ -1,7 +1,10 @@
+import { useContext } from "react"
+import DataContext from "../../Utils/DataContext"
 
 const MenuUpperBar = () => {
 
 
+    const {userRole}=useContext(DataContext)
     const logout=()=>
     {
         localStorage.removeItem("TOKEN")
@@ -98,11 +101,11 @@ const MenuUpperBar = () => {
                             <img className="rounded-circle me-lg-2"
                                 src="/public/assets/img/paradise.png" alt=""
                                 style={{ width: "40px", height: "40px" }} />
-                            <span className="d-none d-lg-inline-flex">Paradise</span>
+                            <span className="d-none d-lg-inline-flex">{userRole?.sub}</span>
                         </a>
                         <div
                             className="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <p className="text-center">Welcome Paradise</p>
+                            <p className="text-center">Welcome {userRole?.sub}</p>
                             <a href="#" className="dropdown-item" onClick={logout}><i
                                 className="ri-logout-box-r-line me-2"></i>Log Out</a>
                         </div>

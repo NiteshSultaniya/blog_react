@@ -1,28 +1,34 @@
 // context/ItemContext.js
 import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useEffect, useState } from 'react';
+import ApiService from './ApiService';
 
 const DataContext = createContext();
 export const DataProvider = ({ children }) => {
-     const [userRole, setUserRole] = useState("");
+  const [userRole, setUserRole] = useState("");
+  const [permission, setpermission] = useState({})
 
   useEffect(() => {
     const token = localStorage.getItem("TOKEN");
 
     if (token) {
       const decoded = jwtDecode(token);
-    //   console.log(decoded);
-      
-      setUserRole(decoded.role); // only runs after the first render
+      setUserRole(decoded); // only runs after the first render
+      ApiService.fetchData("role-permission/permission/all-permission").then((res) => {
+        if (res?.status === 200) {
+          setpermission(res?.data)
+        }
+      })
+
     } else {
       setUserRole("");
     }
   }, []);
-    return (
-        <DataContext.Provider value={{ userRole }}>
-            {children}
-        </DataContext.Provider>
-    );
+  return (
+    <DataContext.Provider value={{ userRole,permission }}>
+      {children}
+    </DataContext.Provider>
+  );
 };
 
 export default DataContext; 

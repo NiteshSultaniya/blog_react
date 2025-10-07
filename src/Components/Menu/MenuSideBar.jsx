@@ -9,6 +9,8 @@ const MenuSideBar = () => {
         location.pathname.startsWith("/add-page");
     const isproductactive = location.pathname.startsWith("/all-product") ||
         location.pathname.startsWith("/add-product") || location.pathname.startsWith("/product-category");
+    const isrolepermissionactive = location.pathname.startsWith("/role-permission/role") ||
+        location.pathname.startsWith("/role-permission/permission") || location.pathname.startsWith("/user");
     return <>
         <div className="sidebar pe-4 pb-3">
             <nav className="navbar bg-secondary navbar-dark">
@@ -39,15 +41,18 @@ const MenuSideBar = () => {
                     }><i className="fa fa-user me-2"></i>User</NavLink> */}
 
                      <div className="nav-item dropdown">
-                        <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
+                        <a href="#" className={`nav-link dropdown-toggle ${isrolepermissionactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
                             className="fa fa-user me-2"></i>Role & Permission</a>
-                        <div className={`dropdown-menu bg-transparent border-0 ${isproductactive ? "show" : ""}`}>
+                        <div className={`dropdown-menu bg-transparent border-0 ${isrolepermissionactive ? "show" : ""}`}>
                             <NavLink to="/user" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
                             }>User</NavLink>
                             <NavLink to="/role-permission/role" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
                             }>Role</NavLink>
+                            <NavLink to="/role-permission/permission" className={({ isActive }) =>
+                                `dropdown-item ${isActive ? "active" : ""}`
+                            }>Permission</NavLink>
                             
                         </div>
                     </div>
