@@ -14,7 +14,7 @@ import AllMedia from './Components/Media/AllMedia'
 import AllProduct from './Components/Product/AllProduct'
 import AddProduct from './Components/Product/AddProduct'
 import ProductCategory from './Components/Product/ProductCategory'
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Role from './Components/User/Role'
 import DataContext from './Utils/DataContext'
 import Permission from './Components/User/Permission'
@@ -23,20 +23,17 @@ function App() {
   const [isadminValid, setisadminValid] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const didMountRef = useRef(true)
-  
+
   let token = JSON.parse(localStorage.getItem("TOKEN"))
-  
+  const { userRole, permission ,userrolewisepermisson} = useContext(DataContext)
+
   useEffect(() => {
     if (didMountRef.current) {
-      // console.log(typeof(userRole))
-      // console.log(userRole);
-      
       if (token == undefined || token == null || token == "") {
         setisadminValid(false)
         setIsLoading(false)
       }
       else {
-
         ApiService.fetchData("verify").then((res) => {
           if (res?.status === 200) {
             setisadminValid(true)
@@ -55,6 +52,8 @@ function App() {
     return <div>Loading...</div> // Show loading indicator instead of login page
   }
 
+  console.log(userrolewisepermisson);
+  
   return (
     <>
 
@@ -70,12 +69,19 @@ function App() {
             <MenuBar />
             <div className="content">
               <Routes>
+
                 <Route path='/dashboard' element={<Dashboard />} />
+
+
+
+
                 <Route path='/all-page' element={<AllPage />} />
                 <Route path='/add-page' element={<AddPage />} />
-                <Route path='/all-media' element={<AllMedia />} />
-                <Route path='/add-media' element={<AddMedia />} />
-
+                {permission.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLMEDIA" && value?.status == 1) ? <>
+                  <Route path='/all-media' element={<AllMedia />} />
+                  <Route path='/add-media' element={<AddMedia />} />
+                </>
+                  : false}
                 <Route path='/all-product' element={<AllProduct />} />
                 <Route path='/all-product/:filterstatusslug' element={<AllProduct />} />
                 <Route path='/add-product' element={<AddProduct />} />

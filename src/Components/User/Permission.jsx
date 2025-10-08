@@ -8,7 +8,12 @@ const Permission = () => {
     const didMountRef = useRef(true)
     const { permission } = useContext(DataContext)
 
-    console.log(permission);
+    // console.log(userRole);
+    // console.log(permission);
+
+
+    const [permissionn, setPermissionn] = useState(Array.isArray(permission) ? permission : [])
+    // console.log(typeof(permissionn));
     useEffect(() => {
         if (didMountRef.current) {
             ApiService.fetchData("role-permission/role/all-active-role").then((res) => {
@@ -20,11 +25,32 @@ const Permission = () => {
         didMountRef.current = false
     }, [])
 
-    const permissionUpdate = (e, roleId, permissionType) => {
-        console.log(e);
-        // console.log(permissionType);
+    const permissionUpdate = (permissionRoleId, permissionType) => {
+        const existingPermissionIndex = permissionn.findIndex((value) =>
+            value?.permissionRoleId == permissionRoleId &&
+            value?.permissionType === permissionType
+        );
+
+        let updatedPermission = [...permissionn];
+
+        if (existingPermissionIndex !== -1) {
+            updatedPermission[existingPermissionIndex] = {
+                ...updatedPermission[existingPermissionIndex],
+                status: updatedPermission[existingPermissionIndex].status === 1 ? 0 : 1
+            };
+        } else {
+            updatedPermission.push({
+                permissionRoleId,
+                permissionType,
+                status: 1
+            });
+        }
+
+        setPermissionn(updatedPermission);
+
+
         let dataString = {
-            permissionRoleId: roleId,
+            permissionRoleId: permissionRoleId,
             permissionType: permissionType,
         }
 
@@ -78,6 +104,23 @@ const Permission = () => {
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td className="border-inherit"><h5>Media</h5></td>
+                                </tr>
+                                <tr>
+                                    <td className="border-inherit text-white-50">All Media</td>
+                                    {
+                                        roleData && roleData.length > 0 ? roleData.map((data) =>
+                                        (<td className="border-inherit">
+                                            <input type="checkbox" id="country-floating" name="permissionRoleId" onChange={() => permissionUpdate(data?.id, "ALLMEDIA")}
+                                                checked={permissionn.find((value) => value?.permissionRoleId == data?.id && value?.permissionType === "ALLMEDIA" && value?.status == 1) ? true : false}
+                                            />
+                                        </td>)
+                                        ) : (<>
+                                        </>)
+                                    }
+                                </tr>
+
+                                <tr>
                                     <td className="border-inherit"><h5>Product</h5></td>
                                 </tr>
                                 <tr>
@@ -85,9 +128,8 @@ const Permission = () => {
                                     {
                                         roleData && roleData.length > 0 ? roleData.map((data) =>
                                         (<td className="border-inherit">
-                                            <input type="checkbox" id="country-floating" name="role_id" onClick={(e) => permissionUpdate(e, data?.id, "ALLPRODUCT")}
-                                                checked={permission.find((value) => value?.permissionRoleId == data?.id && value?.permissionType === "ALLPRODUCT" && value?.status == 1) ? true
-                                                : false }
+                                            <input type="checkbox" id="country-floating" name="permissionRoleId" onChange={() => permissionUpdate(data?.id, "ALLPRODUCT")}
+                                                checked={permissionn.find((value) => value?.permissionRoleId == data?.id && value?.permissionType === "ALLPRODUCT" && value?.status == 1) ? true : false}
                                             />
                                         </td>)
                                         ) : (<>
@@ -98,8 +140,8 @@ const Permission = () => {
                                     <td className="border-inherit text-white-50">Add Product</td>
                                     {
                                         roleData && roleData.length > 0 ? roleData.map((data) =>
-                                        (<td className="border-inherit">
-                                            <input type="checkbox" id="country-floating" name="permissionRoleId" onClick={(e) => permissionUpdate(e, data?.id, "ADDPRODUCT")} checked={permission.find((value) => value?.permissionRoleId == data?.id && value?.permissionType === "ADDPRODUCT" && value?.status == 1)} />
+                                        (<td className="border-inherit" key={data?.id}>
+                                            <input type="checkbox" id="country-floating" name="permissionRoleId" onChange={() => permissionUpdate(data?.id, "ADDPRODUCT")} checked={permissionn.find((value) => value?.permissionRoleId == data?.id && value?.permissionType === "ADDPRODUCT" && value?.status == 1) ? true : false} />
                                         </td>)
                                         ) : (<>
                                         </>)

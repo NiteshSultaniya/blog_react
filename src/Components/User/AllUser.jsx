@@ -130,7 +130,7 @@ const AllUser = () => {
                                                 <th style={{ width: "60px" }}>S.no.</th>
                                                 <th>User Name</th>
                                                 <th>User Email</th>
-                                                <th>User Address</th>
+                                                <th>User Role</th>
                                                 <th className="text-center">Status</th>
                                                 <th className="text-center">Action</th>
                                             </tr>
@@ -143,7 +143,7 @@ const AllUser = () => {
                                                             <th>{index + 1}</th>
                                                             <td>{value?.username}</td>
                                                             <td>{value?.email}</td>
-                                                            <td>{value?.role}</td>
+                                                            <td>{value?.roleName}</td>
 
                                                             {value?.status == 1 ? <>
                                                                 <td className="text-center"><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>

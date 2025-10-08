@@ -1,8 +1,23 @@
+import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom"
+import DataContext from "../../Utils/DataContext";
 
 const MenuSideBar = () => {
 
     const location = useLocation();
+    const didMountRef = useRef(true)
+
+    const { userRole, permission ,userrolewisepermisson} = useContext(DataContext)
+    const [permissionn, setPermissionn] = useState(Array.isArray(permission) ? permission : [])
+
+    useEffect(() => {
+        if (didMountRef.current) {
+            console.log(userRole);
+            console.log(permission);
+        }
+        didMountRef.current = false
+    }, [])
+
 
     // check if current path starts with /all-page or /add-page
     const isPageActive = location.pathname.startsWith("/all-page") ||
@@ -36,11 +51,8 @@ const MenuSideBar = () => {
                     <NavLink to="/dashboard" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
-                    {/* <NavLink to="/user" className={({ isActive }) =>
-                        `nav-item nav-link ${isActive ? "active" : ""}`
-                    }><i className="fa fa-user me-2"></i>User</NavLink> */}
 
-                     <div className="nav-item dropdown">
+                    <div className="nav-item dropdown">
                         <a href="#" className={`nav-link dropdown-toggle ${isrolepermissionactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
                             className="fa fa-user me-2"></i>Role & Permission</a>
                         <div className={`dropdown-menu bg-transparent border-0 ${isrolepermissionactive ? "show" : ""}`}>
@@ -53,14 +65,15 @@ const MenuSideBar = () => {
                             <NavLink to="/role-permission/permission" className={({ isActive }) =>
                                 `dropdown-item ${isActive ? "active" : ""}`
                             }>Permission</NavLink>
-                            
+
                         </div>
                     </div>
-
-                    <NavLink to="/all-media" className={({ isActive }) =>
-                        `nav-item nav-link ${isActive ? "active" : ""}`
-                    }><i className="fa fa-image me-2"></i>Media</NavLink>
-
+                    {permission.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLMEDIA" && value?.status == 1) ? <>
+                        <NavLink to="/all-media" className={({ isActive }) =>
+                            `nav-item nav-link ${isActive ? "active" : ""}`
+                        }><i className="fa fa-image me-2"></i>Media</NavLink>
+                    </>
+                        : false}
                     <div className="nav-item dropdown">
                         <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
                             className="fa fa-shopping-bag me-2"></i>Products</a>

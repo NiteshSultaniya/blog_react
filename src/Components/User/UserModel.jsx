@@ -6,6 +6,7 @@ import { Toasts } from '../../Utils/Toasts';
 
 
 const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle ,roleData}) => {
+    const [passwordCondition, setpasswordCondition] = useState(true)
 
 
     const [formData, setformData] = useState({
@@ -13,12 +14,11 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle ,roleData}) =>
         "username": "",
         "password": "",
         "email": "",
-        "role": "",
+        "roleId": "",
         "mobile": "",
 
     })
 
-    const [passwordCondition, setpasswordCondition] = useState(true)
     const didMountRef = useRef(true)
     useEffect(() => {
         if (didMountRef.current) {
@@ -137,12 +137,12 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle ,roleData}) =>
                                 <div className="col-lg-12">
                                     <div className="mb-3">
                                         <label className="form-label">Role: <span style={{ color: "red" }}>*</span></label>
-                                        <select className="form-control required" onChange={changeValue} value={formData.role} name="role" placeholder="Select Role">
+                                        <select className="form-control required" onChange={changeValue} value={formData.roleId} name="roleId" placeholder="Select Role">
                                             <option value="">Select Role</option>
                                             {roleData && roleData.length > 0 ?
                                                 roleData.map((data) =>(
                                                     <>
-                                                        <option value={data?.roleName}>{data?.roleName}</option>
+                                                        <option value={data?.id}>{data?.roleName}</option>
                                                         
                                                     </>
                                                 ))
