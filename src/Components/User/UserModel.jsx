@@ -5,15 +5,17 @@ import ApiService from '../../Utils/ApiService';
 import { Toasts } from '../../Utils/Toasts';
 
 
-const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
+const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle ,roleData}) => {
+    const [passwordCondition, setpasswordCondition] = useState(true)
 
 
     const [formData, setformData] = useState({
         "id": 0,
-        "user_name": "",
-        "user_password": "",
-        "user_email": "",
-        "user_address": "",
+        "username": "",
+        "password": "",
+        "email": "",
+        "roleId": "",
+        "mobile": "",
 
     })
 
@@ -21,8 +23,7 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
     useEffect(() => {
         if (didMountRef.current) {
             if (editmodelToggle !== "") {
-                console.log(editmodelToggle);
-                setformData(editmodelToggle)
+                setformData({ ...editmodelToggle, password: "" })
             }
         }
         didMountRef.current = false
@@ -30,9 +31,11 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
 
 
     const changeValue = (e) => {
-       
 
-            setformData({ ...formData, [e.target.name]: e.target.value })
+        if (e.target.name === "password") {
+            setpasswordCondition(false)
+        }
+        setformData({ ...formData, [e.target.name]: e.target.value })
     }
     const formLogin = (e) => {
         let required = document.getElementsByClassName("required");
@@ -53,16 +56,17 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
                 return re.test(email);
             };
 
-            if (!validateEmail(formData.user_email)) {
+            if (!validateEmail(formData.email)) {
                 Toasts.error('Email is Invalid')
                 return false
             }
             // console.log(formData);
-            ApiService.postData("add-user-process", formData).then((res) => {
+            // return false
+            ApiService.postData("create-user", formData).then((res) => {
                 if (res?.status === 200) {
                     Toasts.sucess(res?.msg)
                     setTimeout(() => {
-                        window.location.reload()
+                        // window.location.reload()
                     }, 2000);
                 } else {
                     Toasts.error(res?.msg)
@@ -90,16 +94,24 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
                                         <input type="text"
                                             className="form-control required"
                                             placeholder="User Name"
-                                            name="user_name" onChange={changeValue} value={formData.user_name} />
+                                            name="username" onChange={changeValue} value={formData.username} />
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
                                     <div className="mb-3">
                                         <label className="form-label">User Password: <span style={{ color: "red" }}>*</span></label>
-                                        <input type="password"
-                                            className={`form-control ${formData.id > 0 ? "" : "required"}`}
-                                            placeholder={`${formData.id > 0 ? "********" : "Password"}`}
-                                            name="user_password" onChange={changeValue} value={formData.user_password} />
+                                        {passwordCondition && formData.id !== 0 ?
+                                            <> <input type="password"
+                                                className={`form-control ${formData.id > 0 ? "" : "required"}`}
+                                                placeholder="*****"
+                                                name="password" onChange={changeValue} value={""} /></>
+                                            : <>
+                                                <input type="password"
+                                                    className={`form-control ${formData.id > 0 ? "" : "required"}`}
+                                                    placeholder={`${formData.id > 0 ? "********" : "Password"}`}
+                                                    name="password" onChange={changeValue} value={formData.password} />
+                                            </>}
+
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
@@ -108,19 +120,35 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle }) => {
                                         <input type="text"
                                             className="form-control required"
                                             placeholder="Email"
-                                            name="user_email" onChange={changeValue} value={formData.user_email} />
+                                            name="email" onChange={changeValue} value={formData.email} />
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
                                     <div className="mb-3">
-                                        <label className="form-label">User Address:</label>
-                                        <textarea type="text"
+                                        <label className="form-label">User Mobile: <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text"
                                             className="form-control"
-                                            placeholder="Address"
-                                            name="user_address" onChange={changeValue} value={formData.user_address} />
+                                            placeholder="Mobile"
+                                            name="mobile" onChange={changeValue} value={formData.mobile} />
                                     </div>
                                 </div>
-                                
+                                <div className="col-lg-12">
+                                    <div className="mb-3">
+                                        <label className="form-label">Role: <span style={{ color: "red" }}>*</span></label>
+                                        <select className="form-control required" onChange={changeValue} value={formData.roleId} name="roleId" placeholder="Select Role">
+                                            <option value="">Select Role</option>
+                                            {roleData && roleData.length > 0 ?
+                                                roleData.map((data) =><option key={data.id} value={data?.id}>{data?.roleName}</option>
+                                                )
+                                                : <>
+                                                </>}
+
+                                        </select>
+
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                     </Modal.Body>

@@ -1,14 +1,31 @@
+import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom"
+import DataContext from "../../Utils/DataContext";
+import ApiService from "../../Utils/ApiService";
 
 const MenuSideBar = () => {
 
     const location = useLocation();
+    const didMountRef = useRef(true)
 
-    // check if current path starts with /all-page or /add-page
-    const isPageActive = location.pathname.startsWith("/all-page") ||
-        location.pathname.startsWith("/add-page");
+    const { userRole, permission } = useContext(DataContext)
+    const [permissionn, setPermissionn] = useState([])
+    useEffect(() => {
+        if (didMountRef.current) {
+            ApiService.fetchData("role-permission/permission/all-permission")
+                .then((res) => {
+                    if (res?.status === 200) {
+                        setPermissionn(res.data);
+                    }
+                })
+        }
+        didMountRef.current = false
+    }, [])
+
     const isproductactive = location.pathname.startsWith("/all-product") ||
         location.pathname.startsWith("/add-product") || location.pathname.startsWith("/product-category");
+    const isrolepermissionactive = location.pathname.startsWith("/role-permission/role") ||
+        location.pathname.startsWith("/role-permission/permission") || location.pathname.startsWith("/user");
     return <>
         <div className="sidebar pe-4 pb-3">
             <nav className="navbar bg-secondary navbar-dark">
@@ -31,44 +48,59 @@ const MenuSideBar = () => {
                 </div>
                 <div className="navbar-nav w-100">
 
-                    <NavLink to="/" className={({ isActive }) =>
+                    <NavLink to="/dashboard" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
-                    <NavLink to="/user" className={({ isActive }) =>
-                        `nav-item nav-link ${isActive ? "active" : ""}`
-                    }><i className="fa fa-user me-2"></i>User</NavLink>
-                    <NavLink to="/all-media" className={({ isActive }) =>
-                        `nav-item nav-link ${isActive ? "active" : ""}`
-                    }><i className="fa fa-image me-2"></i>Media</NavLink>
+                    {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLMEDIA" && value?.status == 1) ? <>
 
-                    <div className="nav-item dropdown">
-                        <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
-                            className="fa fa-shopping-bag me-2"></i>Products</a>
-                        <div className={`dropdown-menu bg-transparent border-0 ${isproductactive ? "show" : ""}`}>
-                            <NavLink to="/all-product" className={({ isActive }) =>
-                                `dropdown-item ${isActive ? "active" : ""}`
-                            }>All Products</NavLink>
-                            <NavLink to="/add-product" className={({ isActive }) =>
-                                `dropdown-item ${isActive ? "active" : ""}`
-                            }>Add Product</NavLink>
-                            <NavLink to="/product-category" className={({ isActive }) =>
-                                `dropdown-item ${isActive ? "active" : ""}`
-                            }>Product Category</NavLink>
-                        </div>
-                    </div>
+                        <div className="nav-item dropdown">
+                            <a href="#" className={`nav-link dropdown-toggle ${isrolepermissionactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
+                                className="fa fa-user me-2"></i>Role & Permission</a>
+                            <div className={`dropdown-menu bg-transparent border-0 ${isrolepermissionactive ? "show" : ""}`}>
+                                <NavLink to="/user" className={({ isActive }) =>
+                                    `dropdown-item ${isActive ? "active" : ""}`
+                                }>User</NavLink>
+                                <NavLink to="/role-permission/role" className={({ isActive }) =>
+                                    `dropdown-item ${isActive ? "active" : ""}`
+                                }>Role</NavLink>
+                                <NavLink to="/role-permission/permission" className={({ isActive }) =>
+                                    `dropdown-item ${isActive ? "active" : ""}`
+                                }>Permission</NavLink>
 
-                    <div className="nav-item dropdown">
-                        <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                            className="fa fa-window-restore me-2"></i>Page</a>
-                        <div className={`dropdown-menu bg-transparent border-0 ${isPageActive ? "show" : ""}`}>
-                            <NavLink to="/all-page" className={({ isActive }) =>
-                                `dropdown-item ${isActive ? "active" : ""}`
-                            }>All Page</NavLink>
-                            <NavLink to="/add-page" className={({ isActive }) =>
-                                `dropdown-item ${isActive ? "active" : ""}`
-                            }>Add Page</NavLink>
+                            </div>
                         </div>
-                    </div>
+                    </> : false}
+                    {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLMEDIA" && value?.status == 1) ? <>
+                        <NavLink to="/all-media" className={({ isActive }) =>
+                            `nav-item nav-link ${isActive ? "active" : ""}`
+                        }><i className="fa fa-image me-2"></i>Media</NavLink>
+                    </>
+                        : false}
+                    {permissionn.find((value) => (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLPRODUCT" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PRODUCTCATEGORY" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ADDPRODUCT" && value?.status == 1)) ? <>
+                        <div className="nav-item dropdown">
+                            <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
+                                className="fa fa-shopping-bag me-2"></i>Products</a>
+                            <div className={`dropdown-menu bg-transparent border-0 ${isproductactive ? "show" : ""}`}>
+                                {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLPRODUCT" && value?.status == 1) ?
+                                    <NavLink to="/all-product" className={({ isActive }) =>
+                                        `dropdown-item ${isActive ? "active" : ""}`
+                                    }>All Products</NavLink>
+                                    : false}
+                                {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ADDPRODUCT" && value?.status == 1) ?
+                                    <NavLink to="/add-product" className={({ isActive }) =>
+                                        `dropdown-item ${isActive ? "active" : ""}`
+                                    }>Add Product</NavLink>
+                                    : false}
+                                {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PRODUCTCATEGORY" && value?.status == 1) ?
+                                    <NavLink to="/product-category" className={({ isActive }) =>
+                                        `dropdown-item ${isActive ? "active" : ""}`
+                                    }>Product Category</NavLink>
+                                    : false}
+                            </div>
+                        </div>
+                    </>
+                        : false}
+
                 </div>
             </nav>
         </div>

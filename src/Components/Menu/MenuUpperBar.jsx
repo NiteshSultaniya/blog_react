@@ -1,7 +1,10 @@
+import { useContext } from "react"
+import DataContext from "../../Utils/DataContext"
 
 const MenuUpperBar = () => {
 
 
+    const {userRole}=useContext(DataContext)
     const logout=()=>
     {
         localStorage.removeItem("TOKEN")
@@ -13,15 +16,15 @@ const MenuUpperBar = () => {
             <nav className="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
                 <a href="index.html" className="navbar-brand d-flex d-lg-none me-4">
                     <h2 className="text-primary mb-0"><img className="rounded-circle"
-                        src="/public/assets/img/defaultimage.png" alt=""
+                        src="/public/assets/img/paradise.png" alt=""
                         style={{ width: "40px", height: "40px" }} /></h2>
                 </a>
-                <a href="#" className="sidebar-toggler flex-shrink-0">
+                {/* <a href="#" className="sidebar-toggler flex-shrink-0">
                     <i className="fa fa-bars"></i>
-                </a>
-                <form className="d-none d-md-flex ms-4">
+                </a> */}
+                {/* <form className="d-none d-md-flex ms-4">
                     <input className="form-control bg-dark border-0" type="search" placeholder="Search" />
-                </form>
+                </form> */}
                 <div className="navbar-nav align-items-center ms-auto">
                     <div className="nav-item dropdown">
                         <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -98,11 +101,11 @@ const MenuUpperBar = () => {
                             <img className="rounded-circle me-lg-2"
                                 src="/public/assets/img/paradise.png" alt=""
                                 style={{ width: "40px", height: "40px" }} />
-                            <span className="d-none d-lg-inline-flex">Paradise</span>
+                            <span className="d-none d-lg-inline-flex">{userRole?.sub}</span>
                         </a>
                         <div
                             className="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <p className="text-center">Welcome Paradise</p>
+                            <p className="text-center">Welcome {userRole?.sub}</p>
                             <a href="#" className="dropdown-item" onClick={logout}><i
                                 className="ri-logout-box-r-line me-2"></i>Log Out</a>
                         </div>

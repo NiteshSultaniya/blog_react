@@ -2,22 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import ApiService from "../../Utils/ApiService";
 import { Toasts } from "../../Utils/Toasts";
 
-const ProductCategory = () => {
+const Role = () => {
 
-    const [categoryData, setcategoryData] = useState({})
     const didMountRef = useRef(true)
 
-    const [formData, setfromData] = useState({
-        "cat_id": 0,
-        "cat_name": "",
-        "cat_slug": "",
+    const [roleData, setroleData] = useState({
+        "id": 0,
+        "roleName": "",
+    })
+    const [roleGetData, setroleGetData] = useState({
+        "id": 0,
+        "roleName": "",
     })
 
     useEffect(() => {
         if (didMountRef.current) {
-            ApiService.fetchData("product/category/all-category").then((res) => {
+            ApiService.fetchData("role-permission/role/all-role").then((res) => {
                 if (res?.status === 200) {
-                    setcategoryData(res?.data)
+                    setroleGetData(res?.data)
                 }
             })
         }
@@ -26,20 +28,20 @@ const ProductCategory = () => {
 
     const namechangemetaupdate = (e) => {
         const catSlug = e.target.value.trim().toLowerCase().replace(/\s+/g, "-");
-        // setfromData({formData.cat_slug:catSlug})
-        setfromData({
-            ...formData, "cat_name": e.target.value, "cat_slug": catSlug
+        // setRoleData({roleData.cat_slug:catSlug})
+        setroleData({
+            ...roleData, "roleName": e.target.value
         })
     }
     const handleChange = (e) => {
-        setfromData({
-            ...formData, [e.target.name]: e.target.value
+        setroleData({
+            ...roleData, [e.target.name]: e.target.value.toUpperCase()
         })
     }
 
     const statusChange = (e) => {
 
-        ApiService.fetchData(`product/category/category-status-update/${e}`).then((res) => {
+        ApiService.fetchData(`role-permission/role/role-status-update/${e}`).then((res) => {
             window.location.reload()
             if (res?.status === 200) {
                 Toasts.sucess(res?.msg)
@@ -53,10 +55,10 @@ const ProductCategory = () => {
         if (!isConfirmed) {
             return;
         }
-        ApiService.fetchData(`product/category/category-delete/${e}`).then((res) => {
+        ApiService.fetchData(`role-permission/role/role-delete/${e}`).then((res) => {
             if (res?.status === 200) {
-                setcategoryData(categoryData.filter((value, index) => {
-                    return value.cat_id !== e
+                setroleGetData(roleGetData.filter((value, index) => {
+                    return value.id !== e
                 }))
                 Toasts.sucess(res?.msg)
             } else {
@@ -66,6 +68,7 @@ const ProductCategory = () => {
     }
 
     const submitForm = () => {
+        
         let required = document.getElementsByClassName("required");
         let counter = 0
         for (let i = 0; i < required.length; i++) {
@@ -78,7 +81,7 @@ const ProductCategory = () => {
             Toasts.error("Please Fill Required Field")
             return false
         } else {
-            ApiService.postData("product/category/category-add-process", formData).then((res) => {
+            ApiService.postData("role-permission/role/role-add-process", roleData).then((res) => {
                 if (res?.status === 200) {
                     // navigate("/all-media")
                     window.location.reload()
@@ -90,9 +93,9 @@ const ProductCategory = () => {
         }
     }
     const editCat = (e) => {
-        ApiService.fetchData(`product/category/find-category-by-id/${e}`).then((res) => {
+        ApiService.fetchData(`role-permission/role/find-role-by-id/${e}`).then((res) => {
             if (res?.status === 200) {
-                setfromData(res?.data)
+                setroleData(res?.data)
             } else {
                 Toasts.error(res?.msg)
             }
@@ -107,11 +110,11 @@ const ProductCategory = () => {
                         <div className="col-12">
                             <div className="page-title-box d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h4 className="mb-sm-0">Manage Category</h4>
+                                    <h4 className="mb-sm-0">Manage Role</h4>
                                     <div className="page-title-right">
                                         <ol className="breadcrumb m-0">
-                                            <li className="breadcrumb-item"><a href="javascript: void(0);">Category</a></li>
-                                            <li className="breadcrumb-item active">Manage Category</li>
+                                            <li className="breadcrumb-item"><a href="javascript: void(0);">Role</a></li>
+                                            <li className="breadcrumb-item active">Manage Role</li>
                                         </ol>
                                     </div>
                                 </div>
@@ -122,13 +125,12 @@ const ProductCategory = () => {
                     <div className="row">
                         <div className="col-lg-4">
                             <div id="formsubmit">
-                                <input type="hidden" name="cat_id"
-                                    value={formData.cat_id} />
+                                <input type="hidden" name="id" value={roleData?.id} />
                                 <div className="card bg-secondary rounded p-3">
                                     <div className="card-header">
                                         <div className="row align-items-center gy-3">
                                             <div className="col-sm">
-                                                <h5 className="card-title my-1">Add Category</h5>
+                                                <h5 className="card-title my-1">Add Role</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -136,27 +138,16 @@ const ProductCategory = () => {
                                         <div className="row">
                                             <div className="col-lg-12">
                                                 <div className="mb-3">
-                                                    <label className="form-label">Category Name: <span style={{ color: "red" }}>*</span></label>
+                                                    <label className="form-label">Role Name: <span style={{ color: "red" }}>*</span></label>
                                                     <input type="text"
                                                         className="form-control required" onChange={handleChange}
-                                                        placeholder="Menu Name" onBlur={namechangemetaupdate} id='cat_name_id'
-                                                        value={formData?.cat_name}
-                                                        name="cat_name" />
+                                                        placeholder="Role Name" onBlur={namechangemetaupdate} id='roleName_id'
+                                                        value={roleData?.roleName}
+                                                        name="roleName" />
 
                                                 </div>
                                             </div>
 
-                                            <div className="col-lg-12">
-                                                <div className="mb-3">
-                                                    <label className="form-label">Category Slug: <span style={{ color: "red" }}>*</span></label>
-                                                    <input type="text"
-                                                        className="form-control required " placeholder="slug"
-                                                        id="cat_slug_id" readOnly
-                                                        value={formData?.cat_slug}
-                                                        name="cat_slug" />
-
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     <div className="card-footer  d-flex justify-content-between">
@@ -172,7 +163,7 @@ const ProductCategory = () => {
                                 <div className="card-header">
                                     <div className="row align-items-center gy-3">
                                         <div className="col-sm">
-                                            <h5 className="card-title my-1">Category</h5>
+                                            <h5 className="card-title my-1">Role</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -183,31 +174,31 @@ const ProductCategory = () => {
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "60px" }}>S.no.</th>
-                                                        <th>Category Name</th>
+                                                        <th>Role Name</th>
                                                         <th className="text-center">Status</th>
                                                         <th className="text-center">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
 
-                                                    {categoryData && categoryData.length > 0 ?
-                                                        categoryData.map((value, index) =>
+                                                    {roleGetData && roleGetData.length > 0 ?
+                                                        roleGetData.map((value, index) =>
                                                             <React.Fragment key={index}>
                                                                 <tr >
                                                                     <th>{index + 1}</th>
-                                                                    <td>{value.cat_name}</td>
+                                                                    <td>{value.roleName}</td>
 
                                                                     {value?.status == 1 ? <>
-                                                                        <td className="text-center"><button onClick={(e) => statusChange(value?.cat_id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>
+                                                                        <td className="text-center"><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>
                                                                         </td>
                                                                     </> : <>
-                                                                        <td className="text-center"><button className="btn" onClick={(e) => statusChange(value?.cat_id)}><span className="badge bg-danger-subtle text-uppercase">Inactive</span></button>
+                                                                        <td className="text-center"><button className="btn" onClick={(e) => statusChange(value?.id)}><span className="badge bg-danger-subtle text-uppercase">Inactive</span></button>
                                                                         </td>
                                                                     </>}
                                                                     <td className="text-center">
-                                                                        <a onClick={(e) => editCat(value?.cat_id)} className="btn btn-info btn-sm btnaction"><i
+                                                                        <a onClick={(e) => editCat(value?.id)} className="btn btn-info btn-sm btnaction"><i
                                                                             className="fas fa-pencil-alt"></i></a>
-                                                                        <a onClick={(e) => deleteconfirm(value?.cat_id)}
+                                                                        <a onClick={(e) => deleteconfirm(value?.id)}
                                                                             className="btn btn-danger  btn-sm btnaction"><i
                                                                                 className="fas fa-trash "></i></a>
                                                                     </td>
@@ -239,4 +230,4 @@ const ProductCategory = () => {
     )
 }
 
-export default ProductCategory
+export default Role

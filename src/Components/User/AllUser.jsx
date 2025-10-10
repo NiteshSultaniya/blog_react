@@ -20,6 +20,7 @@ const AllUser = () => {
     const hideloginmodal = () => {
         setmodelToggle(!modelToggle);
     }
+    const [roleData, setroleData] = useState({})
 
     useEffect(() => {
         if (didMountRef.current) {
@@ -27,6 +28,8 @@ const AllUser = () => {
             ApiService.fetchData("all-user").then((res) => {
                 if (res?.status === "success") {
                     setuserData(res?.data)
+                    setroleData(res?.roleData)
+
                     // console.log(res?.data)
                 }
             })
@@ -43,14 +46,14 @@ const AllUser = () => {
             return;
         }
         ApiService.fetchData(`user-status/${e}`).then((res) => {
-            window.location.reload()
-
             if (res?.status === "success") {
                 Toasts.sucess(res?.msg)
             } else {
 
                 Toasts.error(res?.msg)
             }
+            window.location.reload()
+
         })
     }
 
@@ -62,14 +65,14 @@ const AllUser = () => {
             return;
         }
         ApiService.fetchData(`user-delete/${e}`).then((res) => {
-            window.location.reload()
-
-            if (res?.status === "success") {
+            if (res?.status === 200) {
                 Toasts.sucess(res?.msg)
             } else {
 
                 Toasts.error(res?.msg)
             }
+            window.location.reload()
+
         })
     }
 
@@ -127,23 +130,22 @@ const AllUser = () => {
                                                 <th style={{ width: "60px" }}>S.no.</th>
                                                 <th>User Name</th>
                                                 <th>User Email</th>
-                                                <th>User Address</th>
+                                                <th>User Role</th>
                                                 <th className="text-center">Status</th>
                                                 <th className="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {userData && userData.length > 0 ?
-                                                <>
-                                                    {userData.map((value, index) => (<>
+                                                    userData.map((value, index) => 
                                                         <tr key={value?.id}>
                                                             <th>{index + 1}</th>
-                                                            <td>{value?.user_name}</td>
-                                                            <td>{value?.user_email}</td>
-                                                            <td>{value?.user_address}</td>
+                                                            <td>{value?.username}</td>
+                                                            <td>{value?.email}</td>
+                                                            <td>{value?.roleName}</td>
 
                                                             {value?.status == 1 ? <>
-                                                                <td className="text-center"><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>
+                                                                <td className="text-center" ><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>
                                                                 </td>
                                                             </> : <>
                                                                 <td className="text-center"><button className="btn" onClick={(e) => statusChange(value?.id)}><span className="badge bg-danger-subtle text-uppercase">Inactive</span></button>
@@ -160,8 +162,8 @@ const AllUser = () => {
                                                                         className="fas fa-trash "></i></button>
                                                             </td>
                                                         </tr>
-                                                    </>))}
-                                                </>
+                                                    )
+                                                
                                                 : <>
 
                                                     <tr><td colSpan="5" style={{ textAlign: "center" }}>Data not Found</td></tr>
@@ -178,7 +180,7 @@ const AllUser = () => {
         </div>
 
         {
-            modelToggle && <UserModel modelToggle={modelToggle} hideloginmodal={hideloginmodal} editmodelToggle={editmodelToggle}/>
+            modelToggle && <UserModel modelToggle={modelToggle} hideloginmodal={hideloginmodal} editmodelToggle={editmodelToggle} roleData={roleData}/>
         }
 
     </>
