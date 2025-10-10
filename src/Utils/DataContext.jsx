@@ -14,6 +14,7 @@ export const DataProvider = ({ children }) => {
     if (token) {
       const decoded = jwtDecode(token);
       setUserRole(decoded);
+      // console.log(decoded);
       
     }
   }, []);

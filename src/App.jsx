@@ -24,7 +24,7 @@ function App() {
 
   let token = JSON.parse(localStorage.getItem("TOKEN"))
   const { userRole } = useContext(DataContext)
-  const [permissionn,setPermissionn]=useState([])
+  const [permissionn, setPermissionn] = useState([])
   useEffect(() => {
     if (didMountRef.current) {
       const token = localStorage.getItem("TOKEN");
@@ -33,40 +33,41 @@ function App() {
         setisadminValid(false);
         setIsLoading(false);
       } else {
-        ApiService.fetchData("verify").then((res) => {
-          if (res?.status === 200) {
-            setisadminValid(true);
-          } else if (res?.status === 401) {
-            localStorage.removeItem("TOKEN");
-          }
-          setIsLoading(false);
-        });
-
         ApiService.fetchData("role-permission/permission/all-permission")
           .then((res) => {
             if (res?.status === 200) {
               setPermissionn(res.data);
             }
-          })
-          
+          }).then(ApiService.fetchData("verify").then((res) => {
+            if (res?.status === 200) {
+              setisadminValid(true);
+            } else if (res?.status === 401) {
+              localStorage.removeItem("TOKEN");
+            }
+            setIsLoading(false);
+          }))
+
+
       }
       didMountRef.current = false;
     }
   }, [])
 
+
+
+
   if (isLoading) {
     return <div>Loading...</div> // Show loading indicator instead of login page
   }
-
-
+  console.log(permissionn);
   return (
     <>
-
       <BrowserRouter basename='/admin'>
         <ToastContainer />
         {
           !isadminValid ? <>
             <Routes>
+              <Route path='/' element={<Navigate to="/login" replace />} />
               <Route path='/login' element={<Login />} />
               <Route path='/register' element={<Register />} />
               <Route path='/*' element={<Navigate to="/login" replace />} />
@@ -98,11 +99,11 @@ function App() {
                   : false}
 
                 {/* Role And Permisssion */}
-                <Route path='/user' element={<AllUser />} />
 
-                <Route path='/role-permission/role' element={<Role />} />
                 {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PERMISSION" && value?.status == 1) ? <>
                   <Route path='/role-permission/permission' element={<Permission />} />
+                  <Route path='/user' element={<AllUser />} />
+                  <Route path='/role-permission/role' element={<Role />} />
                 </>
                   : false}
                 {/* Role And Permisssion End */}

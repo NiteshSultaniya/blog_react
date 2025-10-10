@@ -51,7 +51,7 @@ const MenuSideBar = () => {
                     <NavLink to="/dashboard" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
-                    {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLMEDIA" && value?.status == 1) ? <>
+                    {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PERMISSION" && value?.status == 1) ? <>
 
                         <div className="nav-item dropdown">
                             <a href="#" className={`nav-link dropdown-toggle ${isrolepermissionactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
