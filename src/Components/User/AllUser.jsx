@@ -137,8 +137,7 @@ const AllUser = () => {
                                         </thead>
                                         <tbody>
                                             {userData && userData.length > 0 ?
-                                                <>
-                                                    {userData.map((value, index) => (<>
+                                                    userData.map((value, index) => 
                                                         <tr key={value?.id}>
                                                             <th>{index + 1}</th>
                                                             <td>{value?.username}</td>
@@ -146,7 +145,7 @@ const AllUser = () => {
                                                             <td>{value?.roleName}</td>
 
                                                             {value?.status == 1 ? <>
-                                                                <td className="text-center"><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>
+                                                                <td className="text-center" ><button onClick={(e) => statusChange(value?.id)} className="btn"><span className="badge bg-success-subtle text-uppercase">Active</span></button>
                                                                 </td>
                                                             </> : <>
                                                                 <td className="text-center"><button className="btn" onClick={(e) => statusChange(value?.id)}><span className="badge bg-danger-subtle text-uppercase">Inactive</span></button>
@@ -163,8 +162,8 @@ const AllUser = () => {
                                                                         className="fas fa-trash "></i></button>
                                                             </td>
                                                         </tr>
-                                                    </>))}
-                                                </>
+                                                    )
+                                                
                                                 : <>
 
                                                     <tr><td colSpan="5" style={{ textAlign: "center" }}>Data not Found</td></tr>

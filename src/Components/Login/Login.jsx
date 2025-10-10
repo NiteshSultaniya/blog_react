@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Toasts } from "../../Utils/Toasts";
 import ApiService from "../../Utils/ApiService";
+import { NavLink } from "react-router-dom";
 
 const Login = () => {
     const [formdata, setformdata] = useState({
@@ -23,14 +24,12 @@ const Login = () => {
             Toasts.error("Please Fill Required Field")
             return false
         } else {
-            // console.log(formdata);
 
             ApiService.postData("login", formdata).then((res) => {
                 if (res.status === 'Success') {
-                    // console.log(res.token)
                     Toasts.sucess("Admin Login Successfully")
                     localStorage.setItem("TOKEN", `"${res?.token}"`)
-                    window.location.reload()
+                    window.location.href = "/admin/dashboard";
 
                 } else {
                     Toasts.error("Enter Valid Login Detail")
@@ -60,8 +59,10 @@ const Login = () => {
                                 <label htmlFor="floatingPassword">Password</label>
                             </div>
                             <button type="submit" className="btn btn-success py-3 w-100 mb-4" onClick={formLogin}>Sign In</button>
+                            <NavLink to="/register">Sign Up</NavLink>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

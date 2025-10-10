@@ -24,7 +24,6 @@ const AllMedia = () => {
 
 
     const statusChange = (e) => {
-        console.log(e)
         ApiService.fetchData(`/media/status-update/${e}`).then((res) => {
             if (res?.status === 200) {
                 window.location.reload()
@@ -100,7 +99,7 @@ const AllMedia = () => {
                                             {mediaData && mediaData.length > 0 ?
 
                                                 <>
-                                                    {mediaData.map((value, index) => (<>
+                                                    {mediaData.map((value, index) => 
                                                         <tr key={value?.id}>
                                                             <th >{index + 1}</th>
                                                             <td className="text-center">
@@ -126,11 +125,11 @@ const AllMedia = () => {
                                                                         className="fas fa-trash "></i></button>
                                                             </td>
                                                         </tr>
-                                                    </>))}
+                                                    )}
                                                 </>
-                                                : <>
+                                                :
                                                     <tr><td colSpan="5" style={{ textAlign: "center" }}>Data not Found</td></tr>
-                                                </>}
+                                               }
                                         </tbody>
                                     </table>
                                 </div>

@@ -17,7 +17,6 @@ const AllProduct = () => {
     const [product_image_path, setproduct_image_path] = useState([])
     const didMountRef = useRef(true)
     const {filterstatusslug}=useParams()
-    // console.log(filterstatusslug)
     useEffect(() => {
         if (didMountRef.current) {
             fetchProduct()
@@ -162,7 +161,7 @@ const AllProduct = () => {
                                             <tbody>
                                                 {productData && productData.length > 0 ?
                                                     <>
-                                                        {productData.map((value, index) => (<>
+                                                        {productData.map((value, index) => 
                                                             <tr key={value?.id}>
                                                                 <th >{index + 1}</th>
                                                                 <td className="text-center">
@@ -188,11 +187,11 @@ const AllProduct = () => {
                                                                             className="fas fa-trash "></i></button>
                                                                 </td>
                                                             </tr>
-                                                        </>))}
+                                                      )}
                                                     </>
-                                                    : <>
+                                                    : 
                                                         <tr><td colSpan="5" style={{ textAlign: "center" }}>Data not Found</td></tr>
-                                                    </>}
+                                                }
                                             </tbody>
                                         </table>
                                     </div>

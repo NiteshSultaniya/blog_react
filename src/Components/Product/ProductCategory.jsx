@@ -49,7 +49,6 @@ const ProductCategory = () => {
         })
     }
     const deleteconfirm = (e) => {
-        // console.log(e)
         const isConfirmed = confirm("Are You Sure You Want To Delete User?");
         if (!isConfirmed) {
             return;
@@ -93,7 +92,6 @@ const ProductCategory = () => {
     const editCat = (e) => {
         ApiService.fetchData(`product/category/find-category-by-id/${e}`).then((res) => {
             if (res?.status === 200) {
-                console.log(res?.data)
                 setfromData(res?.data)
             } else {
                 Toasts.error(res?.msg)

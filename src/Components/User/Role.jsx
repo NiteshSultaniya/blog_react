@@ -51,7 +51,6 @@ const Role = () => {
         })
     }
     const deleteconfirm = (e) => {
-        // console.log(e)
         const isConfirmed = confirm("Are You Sure You Want To Delete User?");
         if (!isConfirmed) {
             return;
@@ -69,7 +68,6 @@ const Role = () => {
     }
 
     const submitForm = () => {
-        console.log(roleData);
         
         let required = document.getElementsByClassName("required");
         let counter = 0
@@ -97,7 +95,6 @@ const Role = () => {
     const editCat = (e) => {
         ApiService.fetchData(`role-permission/role/find-role-by-id/${e}`).then((res) => {
             if (res?.status === 200) {
-                console.log(res?.data)
                 setroleData(res?.data)
             } else {
                 Toasts.error(res?.msg)

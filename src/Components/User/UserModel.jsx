@@ -29,8 +29,6 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle ,roleData}) =>
         didMountRef.current = false
     }, [])
 
-    console.log(roleData);
-    
 
     const changeValue = (e) => {
 
@@ -140,14 +138,9 @@ const UserModel = ({ modelToggle, hideloginmodal, editmodelToggle ,roleData}) =>
                                         <select className="form-control required" onChange={changeValue} value={formData.roleId} name="roleId" placeholder="Select Role">
                                             <option value="">Select Role</option>
                                             {roleData && roleData.length > 0 ?
-                                                roleData.map((data) =>(
-                                                    <>
-                                                        <option value={data?.id}>{data?.roleName}</option>
-                                                        
-                                                    </>
-                                                ))
+                                                roleData.map((data) =><option key={data.id} value={data?.id}>{data?.roleName}</option>
+                                                )
                                                 : <>
-
                                                 </>}
 
                                         </select>

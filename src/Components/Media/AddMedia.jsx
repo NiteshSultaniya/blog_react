@@ -15,8 +15,6 @@ const AddMedia = () => {
 
     const imageValidation = (imageFile) => {
         var fileInput = document.getElementById("imageFile");
-        // console.log(fileInput);
-        // return false
 
         var mime = fileInput.value.split(".").pop();
         var fsize = fileInput.files[0].size;
@@ -39,9 +37,6 @@ const AddMedia = () => {
         }
     }
 
-    // useEffect(() => {
-    //     console.log("Updated formData:", formData);
-    // }, [formData]);
 
     const navigate = useNavigate()
     const submitForm = () => {
