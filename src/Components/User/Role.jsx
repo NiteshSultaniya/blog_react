@@ -198,9 +198,9 @@ const Role = () => {
                                                                     <td className="text-center">
                                                                         <a onClick={(e) => editCat(value?.id)} className="btn btn-info btn-sm btnaction"><i
                                                                             className="fas fa-pencil-alt"></i></a>
-                                                                        <a onClick={(e) => deleteconfirm(value?.id)}
+                                                                        {/* <a onClick={(e) => deleteconfirm(value?.id)}
                                                                             className="btn btn-danger  btn-sm btnaction"><i
-                                                                                className="fas fa-trash "></i></a>
+                                                                                className="fas fa-trash "></i></a> */}
                                                                     </td>
                                                                 </tr>
                                                             </React.Fragment>

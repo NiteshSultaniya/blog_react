@@ -11,9 +11,7 @@ const AllProduct = () => {
     const [productData, setproductData] = useState([])
     const [totalPages, settotalPages] = useState(0)
     const [currentPages, setcurrentPages] = useState(0)
-    const [allproductcount, setallproductcount] = useState(0)
-    const [activeproductcount, setactiveproductcount] = useState(0)
-    const [inactiveproductcount, setinactiveproductcount] = useState(0)
+
     const [product_image_path, setproduct_image_path] = useState([])
     const didMountRef = useRef(true)
     const {filterstatusslug}=useParams()
@@ -39,16 +37,13 @@ const AllProduct = () => {
         }
     }
 
-    const [filterstatus,setfilterdata]=useState(filterstatusslug||"all")
     const fetchProduct = (nextpage = 0) => {
-        ApiService.fetchData(`product/all-product?page=${nextpage}&size=15&filterstatus=${filterstatus}`).then((res) => {
+        ApiService.fetchData(`product/all-product?page=${nextpage}&size=15`).then((res) => {
             if (res?.status == 200) {
                 setproductData(prev => [...prev, ...res?.data?.content]);
                 setproduct_image_path(res?.product_image_path)
                 settotalPages(res?.data?.totalPages)
-                setallproductcount(res?.allproductcount)
-                setactiveproductcount(res?.activeproductcount)
-                setinactiveproductcount(res?.inactiveproductcount)
+   
             }
         })
     }
@@ -114,7 +109,7 @@ const AllProduct = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="card-body">
+                        {/* <div className="card-body">
                             <div className="row align-items-center justify-content-between">
                                 <div className="col-lg-12 col-sm-12">
                                     <ul className="nav nav-tabs nav-tabs-custom nav-success" role="tablist">
@@ -142,7 +137,7 @@ const AllProduct = () => {
                                 </div>
 
                             </div>
-                        </div>
+                        </div> */}
                         <div className="card-body justify-content-sm-center">
                             <div className="row align-items-center gy-3">
                                 <div className="col-lg-12">

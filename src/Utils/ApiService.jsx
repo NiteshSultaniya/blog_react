@@ -5,7 +5,7 @@ import { Toasts } from "./Toasts";
 // const location=useLocation()
 
 const client = axios.create({
-    baseURL: "http://localhost:9090/api/"||"http://10.44.208.115:9090/api/",
+    baseURL: "http://10.24.112.115:9090/api/"||"http://localhost:9090/api/"
 });
 
 client.interceptors.request.use(

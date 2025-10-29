@@ -52,7 +52,7 @@ const Login = () => {
                             </div>
                             <div className="form-floating mb-3">
                                 <input type="email" name="username" className="form-control required" id="useremail" placeholder="name@example.com" onChange={changeValue} value={formdata.username} />
-                                <label htmlFor="floatingInput">Email address</label>
+                                <label htmlFor="floatingInput">UserName</label>
                             </div>
                             <div className="form-floating mb-3 ">
                                 <input type="password" className="form-control pe-5 password required " name="password" id="password-input" onChange={changeValue} placeholder="Password" value={formdata.password} />
