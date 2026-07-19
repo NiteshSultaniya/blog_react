@@ -58,7 +58,7 @@ const AddProduct = () => {
     }, [])
 
 
-    var allowedMimes = ["png", "jpg", "jpeg", "gif"]; //allowed image mime types
+    var allowedMimes = ["png", "jpg", "jpeg", "gif","webp"]; //allowed image mime types
     var maxMb = 2; //maximum allowed size (MB) of image
 
     const imageValidation = (imageFile) => {
@@ -326,7 +326,7 @@ const AddProduct = () => {
                                                         style={{ color: "red" }}>*</span></label>
                                                     <div className="input-group">
                                                         <input type="file" className="form-control" id="imageFile" name="product_image"
-                                                            accept="image/png, image/gif, image/jpeg"
+                                                            accept="image/png, image/webp ,image/gif, image/jpeg"
                                                             onChange={(e) => imageValidation(imageFile)} />
 
                                                     </div>

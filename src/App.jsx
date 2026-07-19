@@ -16,6 +16,7 @@ import Role from './Components/User/Role'
 import DataContext from './Utils/DataContext'
 import Permission from './Components/User/Permission'
 import Register from './Components/Login/Register'
+import PaymentGateWay from './Components/PaymentGateway/PaymentGateWay'
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
@@ -85,6 +86,15 @@ function App() {
                   <Route path='/add-media' element={<AddMedia />} />
                 </>
                   : false}
+
+
+
+                  <Route path='/Payment-gateway' element={<PaymentGateWay />} />
+                  <Route path='/payment-callback' element={<PaymentGateWay />} />
+
+
+
+                {/*********************** Products ***********************/}
                 {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLPRODUCT" && value?.status == 1) ? <>
                   <Route path='/all-product' element={<AllProduct />} />
                   <Route path='/all-product/:filterstatusslug' element={<AllProduct />} />
@@ -98,15 +108,15 @@ function App() {
                 </>
                   : false}
 
-                {/* Role And Permisssion */}
 
+
+                {/****************** Role And Permisssion ******************/}
                 {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PERMISSION" && value?.status == 1) ? <>
                   <Route path='/role-permission/permission' element={<Permission />} />
                   <Route path='/user' element={<AllUser />} />
                   <Route path='/role-permission/role' element={<Role />} />
                 </>
                   : false}
-                {/* Role And Permisssion End */}
 
 
 
