@@ -51,7 +51,7 @@ const MenuSideBar = () => {
                     <NavLink to="/dashboard" className={({ isActive }) =>
                         `nav-item nav-link ${isActive ? "active" : ""}`
                     }><i className="fa fa-tachometer-alt me-2"></i>Dashboard</NavLink>
-                    {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLMEDIA" && value?.status == 1) ? <>
+                    {permissionn.find((value) => value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PERMISSION" && value?.status == 1) ? <>
 
                         <div className="nav-item dropdown">
                             <a href="#" className={`nav-link dropdown-toggle ${isrolepermissionactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
@@ -76,6 +76,12 @@ const MenuSideBar = () => {
                         }><i className="fa fa-image me-2"></i>Media</NavLink>
                     </>
                         : false}
+
+                        <NavLink to="/Payment-gateway" className={({ isActive }) =>
+                            `nav-item nav-link ${isActive ? "active" : ""}`
+                        }><i className="fa fa-image me-2"></i>PaymentGateway</NavLink>
+
+
                     {permissionn.find((value) => (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLPRODUCT" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PRODUCTCATEGORY" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ADDPRODUCT" && value?.status == 1)) ? <>
                         <div className="nav-item dropdown">
                             <a href="#" className={`nav-link dropdown-toggle ${isproductactive ? "active" : ""}`} data-bs-toggle="dropdown"><i
