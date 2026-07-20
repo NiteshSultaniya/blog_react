@@ -17,6 +17,7 @@ import DataContext from './Utils/DataContext'
 import Permission from './Components/User/Permission'
 import Register from './Components/Login/Register'
 import PaymentGateWay from './Components/PaymentGateway/PaymentGateWay'
+import Order from './Components/PaymentGateway/Order'
 
 function App() {
   const [isadminValid, setisadminValid] = useState(null)
@@ -60,7 +61,7 @@ function App() {
   if (isLoading) {
     return <div>Loading...</div> // Show loading indicator instead of login page
   }
-  console.log(permissionn);
+  // console.log(userRole);
   return (
     <>
       <BrowserRouter basename='/admin'>
@@ -89,8 +90,11 @@ function App() {
 
 
 
+                {/*********************** PaymentGateway ***********************/}
                   <Route path='/Payment-gateway' element={<PaymentGateWay />} />
                   <Route path='/payment-callback' element={<PaymentGateWay />} />
+                  <Route path='/order' element={<Order />} />
+
 
 
 

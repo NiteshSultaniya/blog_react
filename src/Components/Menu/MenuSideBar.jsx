@@ -77,9 +77,13 @@ const MenuSideBar = () => {
                     </>
                         : false}
 
-                        <NavLink to="/Payment-gateway" className={({ isActive }) =>
-                            `nav-item nav-link ${isActive ? "active" : ""}`
-                        }><i className="fa fa-image me-2"></i>PaymentGateway</NavLink>
+                    <NavLink to="/Payment-gateway" className={({ isActive }) =>
+                        `nav-item nav-link ${isActive ? "active" : ""}`
+                    }><i className="fa fa-money-bill-1-wave me-2"></i>PaymentGateway</NavLink>
+
+                    <NavLink to="/order" className={({ isActive }) =>
+                        `nav-item nav-link ${isActive ? "active" : ""}`
+                    }><i className="fa fa-cart-shopping me-2"></i>Ordes</NavLink>
 
 
                     {permissionn.find((value) => (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLPRODUCT" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PRODUCTCATEGORY" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ADDPRODUCT" && value?.status == 1)) ? <>

@@ -1,15 +1,36 @@
 import { useEffect, useRef, useState } from "react"
 import ApiService from "../../Utils/ApiService"
 import { Toasts } from "../../Utils/Toasts"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import Constant from "../../Utils/Constant"
 
 const PaymentGateWay = () => {
 
     const [formData, setformData] = useState({
+        name:"",
+        email:"",
+        contact:"",
         amount: "",
     })
     const [razorpay_order_id, set_razorpay_order_id] = useState("")
+    const navigate = useNavigate();
+
+
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            if (window.Razorpay) {
+                resolve(true);
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
 
     const verifyPayment = (paymentData) => {
         try {
@@ -23,10 +44,12 @@ const PaymentGateWay = () => {
             }
             ApiService.postData("/payment/verify-order", datastring).then((res) => {
                 if (res?.status === 200) {
-                            console.log(res?.msg)
-                        } else {
-                            console.log(res?.msg)
-                        }
+                    Toasts.sucess(res?.msg)
+                    // navigate("/order")
+                    window.location.href="/admin/order"
+                } else {
+                    Toasts.error(res?.msg)
+                }
 
             })
         } catch (error) {
@@ -36,7 +59,7 @@ const PaymentGateWay = () => {
     };
 
 
-    const submitForm = () => {
+    const submitForm =() => {
         let required = document.getElementsByClassName("required");
         let counter = 0
         for (let i = 0; i < required.length; i++) {
@@ -49,39 +72,41 @@ const PaymentGateWay = () => {
             Toasts.error("Please Fill Required Field")
             return false
         } else {
-            ApiService.postData("payment/create-order", formData).then((res) => {
+            ApiService.postData("payment/create-order", formData).then(async(res) => {
                 if (res?.status === 200) {
-                    Toasts.sucess(res?.msg)
+                    // Toasts.sucess(res?.msg)
+            // console.log(res?.data?.id)
+
                     set_razorpay_order_id(res?.data?.id)
+                    const loaded = await loadRazorpay();
+
+                    // if (!loaded) {
+                    //     alert("Failed to load Razorpay SDK");
+                    //     return;
+                    // }
                     const options = {
                         "key": Constant.RAZORPAY_SECRETE_KEY,
                         "amount": res?.data?.amount,
                         "currency": res?.data?.currency,
-                        "name": "Nitesh Yadav",
+                        "name": formData.name,
                         "description": "Payment for your product",
                         "order_id": res?.data?.id,
                         handler: function (response) {
                             verifyPayment(response);
                         },
-                        ondismiss: function () {
-                            console.log("User closed checkout");
-                        },
+                        
                         "prefill": {
-                            "name": "User Name",
-                            "email": "user@example.com",
-                        }
+                            "name": formData.name,
+                            "email": formData.email,
+                            "contact":formData.contact
+                        },
                     }
                     // return false
-                    const rzp1 = new Razorpay(options);
+                    const rzp1 = new window.Razorpay(options);
 
                     rzp1.on('payment.error', function (response) {
-                        console.log(response);
                         paymentFailed(response)
-                        if (res?.status === 200) {
-                            Toasts.sucess(res?.msg)
-                        } else {
-                            Toasts.error(res?.msg)
-                        }
+
                     });
 
                     rzp1.open();
@@ -102,7 +127,14 @@ const PaymentGateWay = () => {
             }
 
             ApiService.postData("payment/failed", dataString).then((res) => {
-                console.log(res);
+                if (res?.status === 200) {
+                    Toasts.sucess(res?.msg)
+                    // navigate("/order")
+                    window.location.href="/admin/order"
+
+                } else {
+                    Toasts.error(res?.msg)
+                }
 
             })
         } catch (error) {
@@ -144,16 +176,42 @@ const PaymentGateWay = () => {
                         </div>
                         <div className="card-body justify-content-sm-center">
                             <div className="row">
-                                <div className="col-lg-12">
+                                <div className="col-lg-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">Name: <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text"
+                                            className="form-control required"
+                                            placeholder="Enter Name"
+                                            name="name" onChange={changeValue} value={formData.name} />
+                                    </div>
+                                </div>
+<div className="col-lg-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">Email: <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text"
+                                            className="form-control required"
+                                            placeholder="Enter Email"
+                                            name="email" onChange={changeValue} value={formData.email} />
+                                    </div>
+                                </div>
+                                <div className="col-lg-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">Mobile: <span style={{ color: "red" }}>*</span></label>
+                                        <input type="number"
+                                            className="form-control required"
+                                            placeholder="Enter Mobile"
+                                            name="contact" onChange={changeValue} value={formData.contact} />
+                                    </div>
+                                </div>
+                                <div className="col-lg-6">
                                     <div className="mb-3">
                                         <label className="form-label">Enter Amount: <span style={{ color: "red" }}>*</span></label>
                                         <input type="text"
                                             className="form-control required"
-                                            placeholder="Enter Value"
+                                            placeholder="Enter Amount"
                                             name="amount" onChange={changeValue} value={formData.amount} />
                                     </div>
                                 </div>
-
 
                             </div>
                         </div>
