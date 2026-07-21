@@ -12,7 +12,7 @@ const PaymentGateWay = () => {
         contact:"",
         amount: "",
     })
-    const [razorpay_order_id, set_razorpay_order_id] = useState("")
+    
     const navigate = useNavigate();
 
 
@@ -32,31 +32,7 @@ const PaymentGateWay = () => {
     };
 
 
-    const verifyPayment = (paymentData) => {
-        try {
-            // console.log(razorpay_order_id)
-            // return false
-            var datastring = {
-                razorpayOrderId: paymentData.razorpay_order_id,
-                razorpayPaymentId: paymentData.razorpay_payment_id,
-                razorpaySignature: paymentData.razorpay_signature,
-                orderId: razorpay_order_id
-            }
-            ApiService.postData("/payment/verify-order", datastring).then((res) => {
-                if (res?.status === 200) {
-                    Toasts.sucess(res?.msg)
-                    // navigate("/order")
-                    window.location.href="/admin/order"
-                } else {
-                    Toasts.error(res?.msg)
-                }
-
-            })
-        } catch (error) {
-            toast.error('Payment verification failed');
-
-        }
-    };
+    
 
 
     const submitForm =() => {
@@ -73,17 +49,8 @@ const PaymentGateWay = () => {
             return false
         } else {
             ApiService.postData("payment/create-order", formData).then(async(res) => {
-                if (res?.status === 200) {
-                    // Toasts.sucess(res?.msg)
-            // console.log(res?.data?.id)
-
-                    set_razorpay_order_id(res?.data?.id)
+                if (res?.status == 200) {
                     const loaded = await loadRazorpay();
-
-                    // if (!loaded) {
-                    //     alert("Failed to load Razorpay SDK");
-                    //     return;
-                    // }
                     const options = {
                         "key": Constant.RAZORPAY_SECRETE_KEY,
                         "amount": res?.data?.amount,
@@ -117,6 +84,31 @@ const PaymentGateWay = () => {
         }
 
     }
+    const verifyPayment = (paymentData) => {
+        try {
+            // console.log(paymentData)
+            // return false
+            var datastring = {
+                razorpayOrderId: paymentData.razorpay_order_id,
+                razorpayPaymentId: paymentData.razorpay_payment_id,
+                razorpaySignature: paymentData.razorpay_signature,
+            }
+            ApiService.postData("/payment/verify-order", datastring).then((res) => {
+                if (res?.status === 200) {
+                    Toasts.sucess(res?.msg)
+                    // navigate("/order")
+                    return false
+                    window.location.href="/admin/order"
+                } else {
+                    Toasts.error(res?.msg)
+                }
+
+            })
+        } catch (error) {
+            toast.error('Payment verification failed');
+
+        }
+    };
     const paymentFailed = (res) => {
         console.log(res.error.code);
         try {
