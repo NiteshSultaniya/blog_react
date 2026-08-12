@@ -43,7 +43,7 @@ const MenuSideBar = () => {
                     </div>
                     <div className="ms-3">
                         <h6 className="mb-0">Paradise</h6>
-                        <span>Admin</span>
+                        <span>{userRole.sub}</span>
                     </div>
                 </div>
                 <div className="navbar-nav w-100">
