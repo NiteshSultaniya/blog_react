@@ -43,7 +43,7 @@ const MenuSideBar = () => {
                     </div>
                     <div className="ms-3">
                         <h6 className="mb-0">Paradise</h6>
-                        <span>Admin</span>
+                        <span>{userRole.sub}</span>
                     </div>
                 </div>
                 <div className="navbar-nav w-100">
@@ -77,9 +77,13 @@ const MenuSideBar = () => {
                     </>
                         : false}
 
-                        <NavLink to="/Payment-gateway" className={({ isActive }) =>
-                            `nav-item nav-link ${isActive ? "active" : ""}`
-                        }><i className="fa fa-image me-2"></i>PaymentGateway</NavLink>
+                    <NavLink to="/Payment-gateway" className={({ isActive }) =>
+                        `nav-item nav-link ${isActive ? "active" : ""}`
+                    }><i className="fa fa-money-bill-1-wave me-2"></i>PaymentGateway</NavLink>
+
+                    <NavLink to="/order" className={({ isActive }) =>
+                        `nav-item nav-link ${isActive ? "active" : ""}`
+                    }><i className="fa fa-cart-shopping me-2"></i>Ordes</NavLink>
 
 
                     {permissionn.find((value) => (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ALLPRODUCT" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "PRODUCTCATEGORY" && value?.status == 1) || (value?.permissionRoleId == userRole?.roleId && value?.permissionType === "ADDPRODUCT" && value?.status == 1)) ? <>

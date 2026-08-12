@@ -1,42 +1,41 @@
 import { useEffect, useRef, useState } from "react"
 import ApiService from "../../Utils/ApiService"
 import { Toasts } from "../../Utils/Toasts"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import Constant from "../../Utils/Constant"
 
 const PaymentGateWay = () => {
 
     const [formData, setformData] = useState({
+        name:"",
+        email:"",
+        contact:"",
         amount: "",
     })
-    const [razorpay_order_id, set_razorpay_order_id] = useState("")
+    
+    const navigate = useNavigate();
 
-    const verifyPayment = (paymentData) => {
-        try {
-            // console.log(razorpay_order_id)
-            // return false
-            var datastring = {
-                razorpayOrderId: paymentData.razorpay_order_id,
-                razorpayPaymentId: paymentData.razorpay_payment_id,
-                razorpaySignature: paymentData.razorpay_signature,
-                orderId: razorpay_order_id
+
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            if (window.Razorpay) {
+                resolve(true);
+                return;
             }
-            ApiService.postData("/payment/verify-order", datastring).then((res) => {
-                if (res?.status === 200) {
-                            console.log(res?.msg)
-                        } else {
-                            console.log(res?.msg)
-                        }
 
-            })
-        } catch (error) {
-            toast.error('Payment verification failed');
-
-        }
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
     };
 
 
-    const submitForm = () => {
+    
+
+
+    const submitForm =() => {
         let required = document.getElementsByClassName("required");
         let counter = 0
         for (let i = 0; i < required.length; i++) {
@@ -49,39 +48,32 @@ const PaymentGateWay = () => {
             Toasts.error("Please Fill Required Field")
             return false
         } else {
-            ApiService.postData("payment/create-order", formData).then((res) => {
-                if (res?.status === 200) {
-                    Toasts.sucess(res?.msg)
-                    set_razorpay_order_id(res?.data?.id)
+            ApiService.postData("payment/create-order", formData).then(async(res) => {
+                if (res?.status == 200) {
+                    const loaded = await loadRazorpay();
                     const options = {
                         "key": Constant.RAZORPAY_SECRETE_KEY,
                         "amount": res?.data?.amount,
                         "currency": res?.data?.currency,
-                        "name": "Nitesh Yadav",
+                        "name": formData.name,
                         "description": "Payment for your product",
                         "order_id": res?.data?.id,
                         handler: function (response) {
                             verifyPayment(response);
                         },
-                        ondismiss: function () {
-                            console.log("User closed checkout");
-                        },
+                        
                         "prefill": {
-                            "name": "User Name",
-                            "email": "user@example.com",
-                        }
+                            "name": formData.name,
+                            "email": formData.email,
+                            "contact":formData.contact
+                        },
                     }
                     // return false
-                    const rzp1 = new Razorpay(options);
+                    const rzp1 = new window.Razorpay(options);
 
                     rzp1.on('payment.error', function (response) {
-                        console.log(response);
                         paymentFailed(response)
-                        if (res?.status === 200) {
-                            Toasts.sucess(res?.msg)
-                        } else {
-                            Toasts.error(res?.msg)
-                        }
+
                     });
 
                     rzp1.open();
@@ -92,6 +84,31 @@ const PaymentGateWay = () => {
         }
 
     }
+    const verifyPayment = (paymentData) => {
+        try {
+            // console.log(paymentData)
+            // return false
+            var datastring = {
+                razorpayOrderId: paymentData.razorpay_order_id,
+                razorpayPaymentId: paymentData.razorpay_payment_id,
+                razorpaySignature: paymentData.razorpay_signature,
+            }
+            ApiService.postData("/payment/verify-order", datastring).then((res) => {
+                if (res?.status === 200) {
+                    Toasts.sucess(res?.msg)
+                    // navigate("/order")
+                    return false
+                    window.location.href="/admin/order"
+                } else {
+                    Toasts.error(res?.msg)
+                }
+
+            })
+        } catch (error) {
+            toast.error('Payment verification failed');
+
+        }
+    };
     const paymentFailed = (res) => {
         console.log(res.error.code);
         try {
@@ -102,7 +119,14 @@ const PaymentGateWay = () => {
             }
 
             ApiService.postData("payment/failed", dataString).then((res) => {
-                console.log(res);
+                if (res?.status === 200) {
+                    Toasts.sucess(res?.msg)
+                    // navigate("/order")
+                    window.location.href="/admin/order"
+
+                } else {
+                    Toasts.error(res?.msg)
+                }
 
             })
         } catch (error) {
@@ -144,16 +168,42 @@ const PaymentGateWay = () => {
                         </div>
                         <div className="card-body justify-content-sm-center">
                             <div className="row">
-                                <div className="col-lg-12">
+                                <div className="col-lg-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">Name: <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text"
+                                            className="form-control required"
+                                            placeholder="Enter Name"
+                                            name="name" onChange={changeValue} value={formData.name} />
+                                    </div>
+                                </div>
+<div className="col-lg-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">Email: <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text"
+                                            className="form-control required"
+                                            placeholder="Enter Email"
+                                            name="email" onChange={changeValue} value={formData.email} />
+                                    </div>
+                                </div>
+                                <div className="col-lg-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">Mobile: <span style={{ color: "red" }}>*</span></label>
+                                        <input type="number"
+                                            className="form-control required"
+                                            placeholder="Enter Mobile"
+                                            name="contact" onChange={changeValue} value={formData.contact} />
+                                    </div>
+                                </div>
+                                <div className="col-lg-6">
                                     <div className="mb-3">
                                         <label className="form-label">Enter Amount: <span style={{ color: "red" }}>*</span></label>
                                         <input type="text"
                                             className="form-control required"
-                                            placeholder="Enter Value"
+                                            placeholder="Enter Amount"
                                             name="amount" onChange={changeValue} value={formData.amount} />
                                     </div>
                                 </div>
-
 
                             </div>
                         </div>
